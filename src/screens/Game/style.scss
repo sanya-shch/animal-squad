@@ -1,0 +1,28 @@
+.game_page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+
+  .game_board {
+    width: min(90vw, 90vh);
+    height: min(90vw, 90vh);
+    background-color: #41ba62;
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      height: calc(100% / var(--size, 15));
+    }
+
+    .cell {
+      width: calc(100% / var(--size, 15));
+    }
+  }
+}
