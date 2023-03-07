@@ -1,8 +1,15 @@
-body {
+@font-face {
+  font-family: Granita;
+  src: url("/src/font/GranitaDemoRegular-BF64055bc8183d6.ttf");
+  font-weight: bold;
+}
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Granita, sans-serif;
 }
