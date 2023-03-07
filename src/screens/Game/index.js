@@ -8,10 +8,12 @@ import * as fenceItems from "../../assets/fenceItems";
 import * as cowList from "../../assets/cowList";
 import cowIcon from "../../assets/cow.png";
 import colorCowIcon from "../../assets/cow_color.png";
+import Header from "../../components/Header";
 
 const GamePage = observer(() => {
   return (
     <div className="game_page">
+      <Header />
       <div
         className="game_board"
         style={{

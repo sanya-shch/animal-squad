@@ -1,0 +1,24 @@
+.header {
+  position: absolute;
+  top: 2vh;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.5rem;
+
+  h1 {
+    cursor: pointer;
+  }
+
+  .progress_bar_wrapper {
+    height: 2px;
+    width: min(60vw, 500px);
+  }
+
+  #progress_bar {
+    background: black;
+    height: 100%;
+    width: 100%;
+  }
+}
