@@ -4,10 +4,11 @@
   align-items: center;
   height: 100vh;
   width: 100vw;
+  user-select: none;
 
   .game_board {
-    width: min(90vw, 90vh);
-    height: min(90vw, 90vh);
+    width: min(90vw, 100vh);
+    height: min(90vw, 100vh);
     background-color: #41ba62;
 
     display: flex;
@@ -18,11 +19,33 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      height: calc(100% / var(--size, 15));
+      height: calc(100% / var(--size, 10));
     }
 
     .cell {
-      width: calc(100% / var(--size, 15));
+      width: calc(100% / var(--size, 10));
+      position: relative;
+
+      img.fence {
+        width: 100%;
+        height: 100%;
+      }
+
+      img.cow {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        &.normal {
+          width: 200%;
+          height: 200%;
+        }
+
+        &.big {
+          width: 400%;
+          height: 400%;
+        }
+      }
     }
   }
 }

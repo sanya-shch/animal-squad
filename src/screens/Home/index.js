@@ -10,7 +10,7 @@ const HomePage = observer(() => {
   const navigate = useNavigate();
 
   const handleClickStart = () => {
-    gameStore.startGame();
+    gameStore.setGameData();
     navigate("/game");
   };
 
