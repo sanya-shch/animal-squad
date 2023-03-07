@@ -5,12 +5,13 @@
   height: 100vh;
   width: 100vw;
   user-select: none;
+  background-color: #41ba62;
 
   .game_board {
     width: min(90vw, 100vh);
     height: min(90vw, 100vh);
     background-color: #41ba62;
-
+    position: relative;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -46,6 +47,14 @@
           height: 400%;
         }
       }
+    }
+  }
+
+  .cow_item {
+    position: absolute;
+
+    img {
+      width: 5vw;
     }
   }
 }

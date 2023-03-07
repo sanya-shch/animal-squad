@@ -6,6 +6,8 @@ import "./style.scss";
 import gameStore from "../../store/gameStore";
 import * as fenceItems from "../../assets/fenceItems";
 import * as cowList from "../../assets/cowList";
+import cowIcon from "../../assets/cow.png";
+import colorCowIcon from "../../assets/cow_color.png";
 
 const GamePage = observer(() => {
   return (
@@ -37,6 +39,23 @@ const GamePage = observer(() => {
                 )}
               </div>
             ))}
+          </div>
+        ))}
+        {gameStore.cowsList.map((item) => (
+          <div
+            key={`cow-item-${item.id}`}
+            className="cow_item"
+            style={{
+              bottom: `${Math.round(5 + Math.random() * (100 - 5))}px`,
+              left: `calc(${Math.round(
+                15 + Math.random() * (85 - 15)
+              )}% - 5vw)`,
+            }}
+          >
+            <img
+              src={item.type === "normal" ? cowIcon : colorCowIcon}
+              alt="cow"
+            />
           </div>
         ))}
       </div>

@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
 import { mapsList } from "../data/index";
+import { shuffle } from "../helpers";
+import React from "react";
 
 class GameStore {
   gameBoard = {};
@@ -9,6 +11,9 @@ class GameStore {
   fence = {};
   cows = {};
   board = [];
+  cowNumber = 0;
+  colorCowNumber = 0;
+  cowsList = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -39,6 +44,24 @@ class GameStore {
 
     this.fence = mapsList[mapIndex].fence;
     this.board = mapsList[mapIndex].board;
+
+    this.cowNumber = mapsList[mapIndex].cowNumber;
+    this.colorCowNumber = Math.round(
+      Math.random() * (mapsList[mapIndex].colorCowNumber + 1)
+    );
+
+    this.cowsList = shuffle([
+      ...Array.from({ length: this.cowNumber }, (_, i) => ({
+        type: "normal",
+        id: i,
+        img: Math.round(Math.random() * 57),
+      })),
+      ...Array.from({ length: this.colorCowNumber }, (_, i) => ({
+        type: "colored",
+        id: this.cowNumber + i,
+        img: `0${Math.round(Math.random() * 4)}`,
+      })),
+    ]);
   };
 }
 

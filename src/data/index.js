@@ -33,5 +33,7 @@ export const mapsList = {
       ["cell-42", "cell-44", "cell-46"],
       ["cell-62", "cell-64", "cell-66"],
     ],
+    cowNumber: 9,
+    colorCowNumber: 3,
   },
 };
