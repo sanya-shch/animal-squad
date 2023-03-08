@@ -17,13 +17,13 @@ const GamePage = observer(() => {
 
     if (gameStore.ongoingGame) {
       timer = setInterval(() => {
-        if (gameStore.progressBarValue + 5 >= 100) {
+        if (gameStore.progressBarValue + 2 >= 100) {
           gameStore.setOngoingGame(false);
           gameStore.setProgressBarValue(100);
         } else {
-          gameStore.setProgressBarValue(gameStore.progressBarValue + 5);
+          gameStore.setProgressBarValue(gameStore.progressBarValue + 2);
         }
-      }, 500);
+      }, 200);
     } else {
       clearInterval(timer);
     }

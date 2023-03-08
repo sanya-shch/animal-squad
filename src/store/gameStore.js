@@ -24,7 +24,7 @@ class GameStore {
   colorCowNumber = 0;
   cowsList = [];
   checkedCowsList = [];
-  progressBarValue = 0;
+  progressBarValue = 5;
 
   ongoingGame = false;
 
@@ -88,7 +88,7 @@ class GameStore {
       })),
     ]);
 
-    this.progressBarValue = 0;
+    this.progressBarValue = 5;
     this.checkedCowsList = [];
 
     this.ongoingGame = true;

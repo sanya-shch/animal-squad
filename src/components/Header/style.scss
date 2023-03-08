@@ -12,13 +12,26 @@
   }
 
   .progress_bar_wrapper {
-    height: 2px;
+    height: 4px;
     width: min(60vw, 500px);
+    margin-top: 2px;
+    background: #525252;
   }
 
   #progress_bar {
-    background: black;
+    background: #313131;
     height: 100%;
     width: 0;
+    position: relative;
+    min-width: 5%;
+
+    img {
+      position: absolute;
+      top: -20px;
+      right: -2px;
+      transform: rotateY(180deg);
+      width: 24px;
+      height: 24px;
+    }
   }
 }

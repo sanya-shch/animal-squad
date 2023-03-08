@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import "./style.scss";
 
 import gameStore from "../../store/gameStore";
+import cowIcon from "../../assets/cow.png";
 
 const Header = observer(() => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const Header = observer(() => {
           style={{
             width: `${gameStore.progressBarValue}%`,
           }}
-        />
+        >
+          <img src={cowIcon} alt="cow" />
+        </div>
       </div>
     </div>
   );
