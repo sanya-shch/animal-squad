@@ -2,22 +2,47 @@ import { makeAutoObservable } from "mobx";
 
 import { mapsList } from "../data/index";
 import { shuffle } from "../helpers";
-import React from "react";
 
 class GameStore {
   gameBoard = {};
   gameBoardSize = 10;
   cells = {};
   fence = {};
-  cows = {};
+  cows = {
+    // "cell-22": { id: 1 },
+    // "cell-24": { id: 2 },
+    // "cell-26": { id: 3 },
+    // "cell-42": { id: "01", size: "big" },
+    // // "cell-44": { id: 1 },
+    // "cell-46": { id: 4 },
+    // "cell-62": { id: 5 },
+    // "cell-64": { id: "03" },
+    // "cell-66": { id: 6 },
+  };
   board = [];
   cowNumber = 0;
   colorCowNumber = 0;
   cowsList = [];
+  checkedCowsList = [];
+  progressBarValue = 0;
+
+  ongoingGame = false;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setProgressBarValue = (value) => (this.progressBarValue = value);
+
+  setCheckedCowsList = () => {
+    const index = this.cowsList.findIndex((item) => !item.checked);
+
+    if (index !== -1) {
+      this.cowsList[index].checked = true;
+    }
+  };
+
+  setOngoingGame = (value) => (this.ongoingGame = value);
 
   setGameBoard = () => {
     this.cells = {};
@@ -47,7 +72,7 @@ class GameStore {
 
     this.cowNumber = mapsList[mapIndex].cowNumber;
     this.colorCowNumber = Math.round(
-      Math.random() * (mapsList[mapIndex].colorCowNumber + 1)
+      Math.random() * mapsList[mapIndex].colorCowNumber
     );
 
     this.cowsList = shuffle([
@@ -62,6 +87,11 @@ class GameStore {
         img: `0${Math.round(Math.random() * 4)}`,
       })),
     ]);
+
+    this.progressBarValue = 0;
+    this.checkedCowsList = [];
+
+    this.ongoingGame = true;
   };
 }
 

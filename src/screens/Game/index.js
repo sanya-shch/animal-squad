@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import "./style.scss";
@@ -11,6 +11,47 @@ import colorCowIcon from "../../assets/cow_color.png";
 import Header from "../../components/Header";
 
 const GamePage = observer(() => {
+  useEffect(() => {
+    let timer = null;
+    let timerClick = null;
+
+    if (gameStore.ongoingGame) {
+      timer = setInterval(() => {
+        if (gameStore.progressBarValue + 5 >= 100) {
+          gameStore.setOngoingGame(false);
+          gameStore.setProgressBarValue(100);
+        } else {
+          gameStore.setProgressBarValue(gameStore.progressBarValue + 5);
+        }
+      }, 500);
+    } else {
+      clearInterval(timer);
+    }
+
+    const mousedownFunc = () => {
+      if (gameStore.ongoingGame) {
+        timerClick = setInterval(() => {
+          gameStore.setCheckedCowsList();
+        }, 200);
+      }
+    };
+    const mouseupFunc = () => {
+      gameStore.setOngoingGame(false);
+
+      clearInterval(timerClick);
+    };
+
+    document.addEventListener("mousedown", mousedownFunc);
+    document.addEventListener("mouseup", mouseupFunc);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(timerClick);
+      document.removeEventListener("mousedown", mousedownFunc);
+      document.removeEventListener("mouseup", mouseupFunc);
+    };
+  }, [gameStore.ongoingGame]);
+
   return (
     <div className="game_page">
       <Header />
@@ -46,7 +87,7 @@ const GamePage = observer(() => {
         {gameStore.cowsList.map((item) => (
           <div
             key={`cow-item-${item.id}`}
-            className="cow_item"
+            className={`cow_item ${item.checked ? "checked" : ""}`}
             style={{
               bottom: `${Math.round(5 + Math.random() * (100 - 5))}px`,
               left: `calc(${Math.round(
