@@ -53,7 +53,7 @@ const GamePage = observer(() => {
   }, [gameStore.ongoingGame]);
 
   return (
-    <div className="game_page">
+    <div className={`game_page ${gameStore.ongoingGame ? "game_on" : ""}`}>
       <Header />
       <div
         className="game_board"
@@ -89,10 +89,10 @@ const GamePage = observer(() => {
             key={`cow-item-${item.id}`}
             className={`cow_item ${item.checked ? "checked" : ""}`}
             style={{
-              bottom: `${Math.round(5 + Math.random() * (100 - 5))}px`,
-              left: `calc(${Math.round(
-                15 + Math.random() * (85 - 15)
-              )}% - 5vw)`,
+              bottom: `calc(${item.bottom}px ${item.checked ? "+ 50%" : ""})`,
+              left: `calc(${
+                item.checked && item.left > 50 ? item.left - 20 : item.left + 20
+              }% - 5vw)`,
             }}
           >
             <img

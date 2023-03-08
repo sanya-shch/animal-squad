@@ -11,6 +11,7 @@
     "react-scripts": "5.0.1"
   },
   "devDependencies": {
+    "prettier": "2.8.4",
     "sass": "1.56.2"
   },
   "scripts": {

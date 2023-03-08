@@ -80,13 +80,17 @@ class GameStore {
         type: "normal",
         id: i,
         img: Math.round(Math.random() * 57),
+        bottom: Math.round(5 + Math.random() * (100 - 5)),
+        left: Math.round(15 + Math.random() * (85 - 15)),
       })),
       ...Array.from({ length: this.colorCowNumber }, (_, i) => ({
         type: "colored",
         id: this.cowNumber + i,
         img: `0${Math.round(Math.random() * 4)}`,
+        bottom: Math.round(5 + Math.random() * (100 - 5)),
+        left: Math.round(15 + Math.random() * (85 - 15)),
       })),
-    ]);
+    ]).sort((a, b) => b.bottom - a.bottom);
 
     this.progressBarValue = 5;
     this.checkedCowsList = [];
