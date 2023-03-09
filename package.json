@@ -2,6 +2,7 @@
   "name": "animal-squad",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sanya-shch.github.io/animal-squad/",
   "dependencies": {
     "mobx": "6.7.0",
     "mobx-react-lite": "3.4.0",
@@ -11,6 +12,7 @@
     "react-scripts": "5.0.1"
   },
   "devDependencies": {
+    "gh-pages": "4.0.0",
     "prettier": "2.8.4",
     "sass": "1.56.2"
   },
@@ -18,7 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

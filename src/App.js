@@ -9,6 +9,7 @@ function App() {
     <Routes>
       <Route index element={<HomePage />} />
       <Route path="/game" element={<GamePage />} />
+      <Route path="*" element={<HomePage />} />
     </Routes>
   );
 }
