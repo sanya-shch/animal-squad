@@ -19,7 +19,7 @@ const GamePage = observer(() => {
     if (gameStore.ongoingGame) {
       timer = setInterval(() => {
         if (gameStore.progressBarValue + 2 >= 100) {
-          gameStore.setOngoingGame(false);
+          gameStore.finishGame();
           gameStore.setProgressBarValue(100);
         } else {
           gameStore.setProgressBarValue(gameStore.progressBarValue + 2);
@@ -37,6 +37,10 @@ const GamePage = observer(() => {
       }
     };
     const mouseupFunc = () => {
+      if (gameStore.ongoingGame) {
+        gameStore.finishGame();
+      }
+
       gameStore.setOngoingGame(false);
 
       clearInterval(timerClick);
@@ -53,9 +57,22 @@ const GamePage = observer(() => {
     };
   }, [gameStore.ongoingGame]);
 
+  const handleClick = () => {
+    gameStore.setGameData();
+  };
+
   return (
     <div className={`game_page ${gameStore.ongoingGame ? "game_on" : ""}`}>
       <Header />
+      <div className="score">{gameStore.score}</div>
+      {gameStore.showInfoBlock && (
+        <div className="info_block">
+          <div className="text">{gameStore.infoBlockText}</div>
+          <div className="btn" onClick={handleClick}>
+            Play again
+          </div>
+        </div>
+      )}
       <div
         className="game_board"
         style={{

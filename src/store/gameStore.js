@@ -24,14 +24,89 @@ class GameStore {
   cowNumber = 0;
   colorCowNumber = 0;
   cowsList = [];
-  checkedCowsList = [];
   progressBarValue = 5;
-
+  score = 0;
   ongoingGame = false;
+  showInfoBlock = false;
+  infoBlockText = "";
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  finishGame = () => {
+    this.ongoingGame = false;
+
+    const coloredCows = this.cowsList.filter(
+      (item) => item.type === "colored" && item.checked
+    );
+    const normalCows = this.cowsList.filter(
+      (item) => item.type !== "colored" && item.checked
+    );
+
+    const coloredCowsNumber = coloredCows.reduce(
+      (acc, item) => {
+        if (item.img === "01" || item.img === "02") {
+          acc.big.push(item.img);
+        } else {
+          acc.small.push(item.img);
+        }
+        return acc;
+      },
+      { big: [], small: [] }
+    );
+
+    if (coloredCows.length === 0 && normalCows.length === 0) {
+      this.infoBlockText = "No animal in the pen";
+      this.showInfoBlock = true;
+
+      this.score = 0;
+    } else if (
+      coloredCowsNumber.big.length +
+        coloredCowsNumber.small.length +
+        normalCows.length >
+      this.board.flat().length
+    ) {
+      this.infoBlockText = "There are too many animals in the pen";
+      this.showInfoBlock = true;
+
+      this.score = 0;
+    } else {
+      this.infoBlockText = "Animals in a pen";
+      this.showInfoBlock = true;
+
+      this.score +=
+        coloredCowsNumber.small.length * 2 +
+        coloredCowsNumber.big.length +
+        normalCows.length;
+
+      if (coloredCowsNumber.big.length) {
+        for (let i = 0; i < coloredCowsNumber.big.length; i++) {
+          this.cows[this.board[i][i % 2 ? 0 : this.board[i].length - 2]] = {
+            id: coloredCowsNumber.big[i],
+            size: "big",
+          };
+
+          this.board[i][i % 2 ? 0 : this.board[i].length - 2] = "-";
+          this.board[i][i % 2 ? 1 : this.board[i].length - 1] = "-";
+        }
+      }
+
+      this.board.forEach((row) => {
+        row.forEach((item) => {
+          if (item !== "-") {
+            if (coloredCowsNumber.small.length) {
+              this.cows[item] = { id: coloredCowsNumber.small.pop() };
+            } else if (normalCows.length) {
+              this.cows[item] = { id: normalCows.pop().img };
+            }
+          }
+        });
+      });
+
+      this.cowsList = [];
+    }
+  };
 
   setProgressBarValue = (value) => (this.progressBarValue = value);
 
@@ -40,6 +115,8 @@ class GameStore {
 
     if (index !== -1) {
       this.cowsList[index].checked = true;
+    } else {
+      this.finishGame();
     }
   };
 
@@ -68,6 +145,11 @@ class GameStore {
 
     const mapIndex = 0;
 
+    this.showInfoBlock = false;
+    this.infoBlockText = "";
+
+    this.cows = {};
+
     this.fence = mapsList[mapIndex].fence;
     this.board = mapsList[mapIndex].board;
     this.forest = mapsList[mapIndex].forest;
@@ -81,21 +163,20 @@ class GameStore {
       ...Array.from({ length: this.cowNumber }, (_, i) => ({
         type: "normal",
         id: i,
-        img: Math.round(Math.random() * 57),
+        img: Math.round(1 + Math.random() * (56 - 1)),
         bottom: Math.round(5 + Math.random() * (100 - 5)),
         left: Math.round(15 + Math.random() * (85 - 15)),
       })),
       ...Array.from({ length: this.colorCowNumber }, (_, i) => ({
         type: "colored",
         id: this.cowNumber + i,
-        img: `0${Math.round(Math.random() * 4)}`,
+        img: `0${Math.round(1 + Math.random() * (4 - 1))}`,
         bottom: Math.round(5 + Math.random() * (100 - 5)),
         left: Math.round(15 + Math.random() * (85 - 15)),
       })),
     ]).sort((a, b) => b.bottom - a.bottom);
 
     this.progressBarValue = 5;
-    this.checkedCowsList = [];
 
     this.ongoingGame = true;
   };
