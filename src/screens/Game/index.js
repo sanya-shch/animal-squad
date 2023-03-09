@@ -5,6 +5,7 @@ import "./style.scss";
 
 import gameStore from "../../store/gameStore";
 import * as fenceItems from "../../assets/fenceItems";
+import * as forestItems from "../../assets/forestItems";
 import * as cowList from "../../assets/cowList";
 import cowIcon from "../../assets/cow.png";
 import colorCowIcon from "../../assets/cow_color.png";
@@ -78,6 +79,13 @@ const GamePage = observer(() => {
                     src={cowList[`cow_${gameStore.cows[cell].id}`]}
                     className={`cow ${gameStore.cows[cell].size ?? "normal"}`}
                     alt="cow"
+                  />
+                )}
+                {gameStore.forest[cell] && (
+                  <img
+                    src={forestItems[gameStore.forest[cell]]}
+                    className="fence"
+                    alt=""
                   />
                 )}
               </div>

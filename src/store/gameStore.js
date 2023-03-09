@@ -8,6 +8,7 @@ class GameStore {
   gameBoardSize = 10;
   cells = {};
   fence = {};
+  forest = {};
   cows = {
     // "cell-22": { id: 1 },
     // "cell-24": { id: 2 },
@@ -69,6 +70,7 @@ class GameStore {
 
     this.fence = mapsList[mapIndex].fence;
     this.board = mapsList[mapIndex].board;
+    this.forest = mapsList[mapIndex].forest;
 
     this.cowNumber = mapsList[mapIndex].cowNumber;
     this.colorCowNumber = Math.round(
