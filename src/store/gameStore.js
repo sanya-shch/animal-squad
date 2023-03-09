@@ -34,6 +34,8 @@ class GameStore {
     makeAutoObservable(this);
   }
 
+  clearScore = () => (this.score = 0);
+
   finishGame = () => {
     this.ongoingGame = false;
 

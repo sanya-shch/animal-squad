@@ -11,6 +11,7 @@ const Header = observer(() => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    gameStore.clearScore();
     navigate("/");
   };
 
