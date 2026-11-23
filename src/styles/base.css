@@ -1,0 +1,20 @@
+@font-face {
+  font-family: Granita;
+  src: url("../font/GranitaDemoRegular-BF64055bc8183d6.ttf") format("truetype");
+  font-weight: bold;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100dvh;
+  background: #41ba62;
+  font-family: Granita, system-ui, sans-serif;
+}
