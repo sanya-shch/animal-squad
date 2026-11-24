@@ -1,26 +1,32 @@
 import "./styles/base.css";
+import "./styles/debug.css";
 
-import { compileLevels, computePar, createRng, generateHerd, randomSeed } from "./core";
+import { compileLevels, hashSeed, randomSeed } from "./core";
+import { mountDevView } from "./dev/devView";
+import { createGame } from "./game";
 import { LEVEL_DEFINITIONS } from "./levels/definitions";
 
-// Temporary entry point while the new UI is being built (patches 3+).
-// It only proves that the whole core pipeline runs in the browser.
 const app = document.querySelector<HTMLElement>("#app");
 if (!app) throw new Error("Missing #app root element");
 
-const seed = randomSeed();
-const rng = createRng(seed);
+const levels = compileLevels(LEVEL_DEFINITIONS);
+const params = new URLSearchParams(location.search);
 
-const lines = [`ANIMAL SQUAD: rewrite in progress (seed ${seed})`, ""];
-for (const level of compileLevels(LEVEL_DEFINITIONS)) {
-  const herd = generateHerd(level, rng);
-  const par = computePar(level.pen, herd);
-  lines.push(
-    `${level.name}: ${level.pen.capacity} squares, herd of ${herd.length}, ` +
-      `par ${par.points} points with ${par.cows} cows`,
-  );
+const level = levels.find((candidate) => candidate.id === params.get("level")) ?? levels[0];
+if (!level) throw new Error("No levels defined");
+
+// ?seed=123 (a number) or ?seed=any-text replays exactly the same game.
+function parseSeed(raw: string | null): number {
+  if (raw === null) return randomSeed();
+  return /^\d+$/.test(raw) ? Number(raw) : hashSeed(raw);
 }
+const seed = parseSeed(params.get("seed"));
 
-const output = document.createElement("pre");
-output.textContent = lines.join("\n");
-app.append(output);
+const game = createGame({ level, seed });
+const unmount = mountDevView(app, game);
+
+// Hot reload would otherwise leave the old game's timer and listeners running.
+import.meta.hot?.dispose(() => {
+  unmount();
+  game.dispose();
+});
