@@ -3,6 +3,30 @@
   src: url("../font/GranitaDemoRegular-BF64055bc8183d6.ttf") format("truetype");
   font-weight: bold;
   font-display: swap;
+  /* The demo font paints a watermark over digits and punctuation, so it only gets letters.
+     Every other glyph falls back to the system font. */
+  unicode-range: U+0020, U+0041-005A, U+0061-007A;
+}
+
+:root {
+  --grass: #41ba62;
+  --grass-light: #5ccb7b;
+  --ink: #1f3d2a;
+  --cream: #fff6dc;
+  --cream-edge: #e6cf8f;
+  --orange: #f0922b;
+  --orange-dark: #c4701a;
+  --gold: #ffc83d;
+  --red: #e5484d;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --walk: 0.75s;
+  --grow: 0.8s;
+
+  font-family: Granita, system-ui, sans-serif;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 *,
@@ -15,6 +39,26 @@
 
 body {
   min-height: 100dvh;
-  background: #41ba62;
-  font-family: Granita, system-ui, sans-serif;
+  background: var(--grass);
+  overscroll-behavior: none;
+}
+
+button,
+a {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

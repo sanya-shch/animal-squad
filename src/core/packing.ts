@@ -13,7 +13,7 @@ const SHAPE_STRIDE = Math.max(...Object.values(COW_KINDS).map((kind) => kind.sha
 /**
  * Exact solver: finds a way to fit every cow into the pen, or proves there is none.
  *
- * Why not just compare cow count with free squares? Two-headed cows are dominoes, so
+ * Why not just compare cow count with free squares? Fat cows are dominoes, so
  * geometry matters: rocks, odd shapes and parity can make a pen "full" long before
  * the squares run out. Backtracking over the multi-square cows is cheap because
  *  - single-square cows never need searching: they fill whatever is left;

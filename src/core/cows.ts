@@ -19,10 +19,10 @@ export interface CowKind {
 export const COW_KINDS = {
   /** A regular cow: one square, one point. */
   normal: { points: 1, skins: 56, shapes: [[[0, 0]]] },
-  /** Rare and valuable: still one square, but worth double. */
-  golden: { points: 2, skins: 2, shapes: [[[0, 0]]] },
-  /** Takes two squares (either orientation) for a single point. A trap for the greedy. */
-  twoHeaded: {
+  /** Two heads, one square, double the points. Rare, and worth waiting for. */
+  twoHeaded: { points: 2, skins: 2, shapes: [[[0, 0]]] },
+  /** Takes two squares (either way round) for a single point. A trap for the greedy. */
+  fat: {
     points: 1,
     skins: 2,
     shapes: [

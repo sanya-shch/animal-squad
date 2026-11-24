@@ -1,0 +1,132 @@
+.home {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  max-width: 720px;
+  margin-inline: auto;
+  padding: max(32px, env(safe-area-inset-top)) 20px 48px;
+  text-align: center;
+}
+
+.home__title {
+  font-size: clamp(44px, 12vw, 72px);
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 4px 0 var(--ink);
+}
+
+.home__tagline {
+  max-width: 460px;
+  font-family: system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.home__subtitle {
+  margin-top: 12px;
+  font-size: 28px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  list-style: none;
+}
+
+.legend__item {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 150px;
+  padding: 10px 8px 12px;
+  border-radius: 16px;
+  background: var(--cream);
+  box-shadow: 0 4px 0 rgb(0 0 0 / 0.15);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.legend__cow {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+
+.legend__cow--fat {
+  width: 120px;
+}
+
+.levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.level {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border-radius: 18px;
+  background: var(--cream);
+  box-shadow: 0 5px 0 rgb(0 0 0 / 0.18);
+  text-decoration: none;
+  transition:
+    transform 0.15s var(--ease-pop),
+    box-shadow 0.15s;
+}
+
+.level:hover,
+.level:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 rgb(0 0 0 / 0.18);
+}
+
+.level:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.18);
+}
+
+.level__name {
+  font-size: 24px;
+}
+
+.level__size {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.preview {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 3px;
+  width: 96px;
+  padding: 6px;
+  border-radius: 8px;
+  background: var(--grass);
+}
+
+.preview__square {
+  aspect-ratio: 1;
+  border-radius: 3px;
+}
+
+.preview__square--pen {
+  background: var(--grass-light);
+}
+
+.preview__square--rock {
+  background: #7b8590;
+}
+
+.preview__square--outside {
+  background: transparent;
+}

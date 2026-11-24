@@ -3,25 +3,23 @@ import { describe, expect, it } from "vitest";
 import { computePar, rateRound, resolveRound } from "./round";
 import { herdOf, pen } from "./testing";
 
-// 4 squares. The first two cows take 3 of them, so the third (a two-headed one) no longer fits.
+// 4 squares. The first two cows take 3 of them, so the third (a fat one) no longer fits.
 const square = pen("..", "..");
-const herd = herdOf("normal", "twoHeaded", "twoHeaded", "normal", "normal");
+const herd = herdOf("normal", "fat", "fat", "normal", "normal");
 
 describe("computePar", () => {
   it("finds the longest prefix of the queue that fits", () => {
     expect(computePar(square, herd)).toEqual({ cows: 2, points: 2 });
   });
 
-  it("values golden cows double", () => {
-    expect(computePar(square, herdOf("golden", "golden", "golden", "golden", "normal"))).toEqual({
-      cows: 4,
-      points: 8,
-    });
+  it("values two-headed cows double", () => {
+    const herd = herdOf("twoHeaded", "twoHeaded", "twoHeaded", "twoHeaded", "normal");
+    expect(computePar(square, herd)).toEqual({ cows: 4, points: 8 });
   });
 
   it("is zero when not even the first cow fits", () => {
     const cramped = pen(".", "#");
-    expect(computePar(cramped, herdOf("twoHeaded", "normal"))).toEqual({ cows: 0, points: 0 });
+    expect(computePar(cramped, herdOf("fat", "normal"))).toEqual({ cows: 0, points: 0 });
   });
 });
 

@@ -30,21 +30,21 @@ describe("findPacking", () => {
     expect(findPacking(p, herdOf("normal", "normal", "normal", "normal", "normal"))).toBeNull();
   });
 
-  it("turns a two-headed cow to fit a one-wide pen", () => {
+  it("turns a fat cow to fit a one-wide pen", () => {
     const p = pen(".", ".");
-    const cows = herdOf("twoHeaded");
+    const cows = herdOf("fat");
     const placements = findPacking(p, cows);
     expect(placements).not.toBeNull();
     assertValidPacking(p, cows, placements ?? []);
   });
 
-  it("tiles a 3x3 pen with four two-headed cows but not five", () => {
+  it("tiles a 3x3 pen with four fat cows but not five", () => {
     const p = pen("...", "...", "...");
-    const four = herdOf("twoHeaded", "twoHeaded", "twoHeaded", "twoHeaded");
+    const four = herdOf("fat", "fat", "fat", "fat");
     const placements = findPacking(p, four);
     expect(placements).not.toBeNull();
     assertValidPacking(p, four, placements ?? []);
-    const fifth = { id: 4, kind: "twoHeaded" as const, skin: 0 };
+    const fifth = { id: 4, kind: "fat" as const, skin: 0 };
     expect(findPacking(p, [...four, fifth])).toBeNull();
   });
 
@@ -52,7 +52,7 @@ describe("findPacking", () => {
     // 8 free squares, but 5 of one chessboard colour and 3 of the other:
     // four dominoes can never cover it even though 4 x 2 = 8.
     const p = pen(".#.", "...", "...");
-    const four = herdOf("twoHeaded", "twoHeaded", "twoHeaded", "twoHeaded");
+    const four = herdOf("fat", "fat", "fat", "fat");
     expect(squaresNeeded(four)).toBe(p.capacity);
     expect(findPacking(p, four)).toBeNull();
     // The same pen with the rock in the middle is a ring of 8 and tiles fine.
@@ -62,7 +62,7 @@ describe("findPacking", () => {
 
   it("mixes single and two-square cows", () => {
     const p = pen("....", "....");
-    const cows = herdOf("twoHeaded", "normal", "golden", "twoHeaded", "normal", "normal");
+    const cows = herdOf("fat", "normal", "twoHeaded", "fat", "normal", "normal");
     const placements = findPacking(p, cows);
     expect(placements).not.toBeNull();
     assertValidPacking(p, cows, placements ?? []);
@@ -70,13 +70,13 @@ describe("findPacking", () => {
 
   it("returns placements ordered by cow id", () => {
     const p = pen("...", "...");
-    const placements = findPacking(p, herdOf("normal", "twoHeaded", "golden")) ?? [];
+    const placements = findPacking(p, herdOf("normal", "fat", "twoHeaded")) ?? [];
     expect(placements.map((placement) => placement.cowId)).toEqual([0, 1, 2]);
   });
 
   it("agrees with an independent brute force search on random small instances", () => {
     const rng = createRng(2026);
-    const kinds: CowKindId[] = ["normal", "golden", "twoHeaded"];
+    const kinds: CowKindId[] = ["normal", "twoHeaded", "fat"];
 
     for (let round = 0; round < 400; round++) {
       let p: Pen | undefined;
