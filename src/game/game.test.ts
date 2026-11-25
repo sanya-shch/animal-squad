@@ -10,6 +10,7 @@ const level = compileLevel({
   name: "Test",
   layout: ["..", ".."],
   herd: { size: 5, spawnWeights: { normal: 1 } },
+  goals: [5, 10, 20],
 });
 
 /** A clock that only moves when the test says so. */

@@ -6,37 +6,63 @@ export interface Panel {
   readonly element: HTMLElement;
   /** A line for screen readers: what just happened. */
   readonly status: HTMLElement;
-  update: (state: GameState) => void;
+  /** `final` says how the run went compared with earlier ones. Only used when the run ended. */
+  update: (state: GameState, final: FinalExtras | undefined) => void;
+}
+
+/** What the end-of-run panel adds to the plain result. */
+export interface FinalExtras {
+  readonly isNewBest: boolean;
+  readonly best: number;
+  /** Stars on this pen after the run. Undefined where there are none (the daily challenge). */
+  readonly stars: number | undefined;
+  readonly nextGoal: number | undefined;
+  /** Names of the pens that this run opened. */
+  readonly unlocked: readonly string[];
 }
 
 interface Summary {
   readonly title: string;
   readonly lines: readonly string[];
   readonly stars: number | undefined;
+  readonly starsLabel: string;
   readonly button: string;
 }
 
 type ResultState = Extract<GameState, { phase: "result" }>;
 
-function summarize(state: ResultState): Summary {
-  const { result, run, gained, final } = state;
-  const button = final ? "New run" : "Next round";
-  const par = `Best possible: ${result.par.points} points with ${result.par.cows} cows.`;
-
-  if (final) {
-    return {
-      title: "Game over",
-      lines: [`Final score: ${run.score}`, par],
-      stars: undefined,
-      button,
-    };
+function summarizeFinal(state: ResultState, extras: FinalExtras | undefined): Summary {
+  const { run } = state;
+  const lines = [`Final score: ${run.score}`];
+  if (extras) {
+    lines.push(extras.isNewBest ? "New best!" : `Best: ${extras.best}`);
+    if (extras.nextGoal !== undefined) lines.push(`Next star at ${extras.nextGoal} points`);
+    else if (extras.stars === 3) lines.push("All three stars earned");
+    for (const name of extras.unlocked) lines.push(`${name} unlocked`);
   }
+  return {
+    title: run.lives > 0 ? "Run complete" : "Game over",
+    lines,
+    stars: extras?.stars,
+    starsLabel: `${extras?.stars ?? 0} out of 3 stars on this pen`,
+    button: "Play again",
+  };
+}
+
+function summarize(state: ResultState, extras: FinalExtras | undefined): Summary {
+  if (state.final) return summarizeFinal(state, extras);
+
+  const { result, gained } = state;
+  const par = `Best possible: ${result.par.points} points with ${result.par.cows} cows.`;
+  const button = "Next round";
+
   switch (result.status) {
     case "empty":
       return {
         title: "Nobody came in",
         lines: ["Keep the gate open a little longer."],
         stars: undefined,
+        starsLabel: "",
         button: "Try again",
       };
     case "overflow":
@@ -44,6 +70,7 @@ function summarize(state: ResultState): Summary {
         title: "The fence broke!",
         lines: [`You let in ${result.admitted.length} cows and lost a life.`, par],
         stars: undefined,
+        starsLabel: "",
         button,
       };
     case "success": {
@@ -55,6 +82,7 @@ function summarize(state: ResultState): Summary {
           result.stars === 3 ? "You could not have fit more." : par,
         ],
         stars: result.stars,
+        starsLabel: `${result.stars} out of 3 stars for this round`,
         button,
       };
     }
@@ -83,7 +111,7 @@ export function createPanel(onNext: () => void): Panel {
   return {
     element,
     status,
-    update: (state) => {
+    update: (state, final) => {
       if (state.phase !== "result") {
         if (shown !== undefined) {
           shown = undefined;
@@ -97,7 +125,7 @@ export function createPanel(onNext: () => void): Panel {
       if (shown === state) return;
       shown = state;
 
-      const summary = summarize(state);
+      const summary = summarize(state, final);
       setText(title, summary.title);
       lines.replaceChildren(...summary.lines.map((line) => create("p", "", [line])));
       setText(button, summary.button);
@@ -105,7 +133,7 @@ export function createPanel(onNext: () => void): Panel {
       starIcons.forEach((icon, index) =>
         icon.classList.toggle("is-earned", index < (summary.stars ?? 0)),
       );
-      setAttr(stars, "aria-label", `${summary.stars ?? 0} out of 3 stars`);
+      setAttr(stars, "aria-label", summary.starsLabel);
 
       // The sheet waits for the herd to finish growing before it slides in.
       setVars(element, { wait: `${revealDurationMs(state)}ms` });

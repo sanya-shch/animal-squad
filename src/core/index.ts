@@ -2,7 +2,7 @@ export { COW_KINDS, COW_KIND_IDS, cowSize, shapesOf, sumPoints } from "./cows";
 export type { Cow, CowKind, CowKindId, Offset, Shape } from "./cows";
 export { generateHerd } from "./herd";
 export { compileLevel, compileLevels, LevelError, MAX_HERD_SIZE } from "./level";
-export type { Level, LevelDefinition, SpawnWeights } from "./level";
+export type { Level, LevelDefinition, SpawnWeights, StarGoals } from "./level";
 export { findPacking } from "./packing";
 export type { Placement } from "./packing";
 export { LayoutError, parseLayout, terrainAt, MAX_PEN_CAPACITY, MAX_PEN_SIDE } from "./pen";

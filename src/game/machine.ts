@@ -6,7 +6,7 @@ import {
   type Level,
   type RoundResult,
 } from "../core";
-import { roundSeed, startRun, type Run } from "./run";
+import { isRunOver, roundSeed, startRun, type Run } from "./run";
 import { scoreRound } from "./scoring";
 
 export type GameState =
@@ -26,7 +26,7 @@ export type GameState =
       readonly herd: readonly Cow[];
       readonly result: RoundResult;
       readonly gained: number;
-      /** True when this round used up the last life. */
+      /** True when this round ended the run: the last life or the last round. */
       readonly final: boolean;
     };
 
@@ -63,7 +63,7 @@ export function createGameMachine(level: Level): GameMachine {
   const finish = (state: AdmittingState, admitted: number): GameState => {
     const result = resolveRound(level.pen, state.herd, admitted);
     const { run, gained } = scoreRound(state.run, result);
-    return { phase: "result", run, herd: state.herd, result, gained, final: run.lives <= 0 };
+    return { phase: "result", run, herd: state.herd, result, gained, final: isRunOver(run) };
   };
 
   const initialState = (seed: number): GameState => readyState(startRun(seed));
@@ -86,7 +86,7 @@ export function createGameMachine(level: Level): GameMachine {
       }
 
       case "result":
-        // After the last life there is no next round, only a restart.
+        // After the last round there is no next one, only a restart.
         return event.type === "next" && !state.final ? readyState(state.run) : state;
     }
   };

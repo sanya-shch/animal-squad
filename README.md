@@ -10,12 +10,14 @@ then let go. The calves grow up into full-size cows, and some of them are mutant
 | Fat        | 2       | 1      | A trap for the greedy: it fits either way round |
 
 Mutants are visible in the queue (a paler calf) but not which kind they are. Too many cows, or
-the wrong mix for the shape of the pen, and the fence breaks. You have three lives. A safe round
-scores the points of its cows, and chains of perfect rounds (you could not have fit more) add a
-growing bonus.
+the wrong mix for the shape of the pen, and the fence breaks. A run is 8 rounds, and three
+broken fences end it early. A safe round scores the points of its cows, and chains of perfect
+rounds (you could not have fit more) add a growing bonus.
 
 Four pens, from a plain 3x3 meadow to an L-shaped yard with rocks, so the same herd plays very
-differently in each.
+differently in each. Every pen has three star goals; a star on one pen opens the next. The
+**daily challenge** is the same pen and the same herds for everybody on a given (UTC) day, so
+scores can be compared. Best scores and day streaks are kept in the browser.
 
 **Controls:** hold the mouse button, a finger or Space. Enter (or the button) goes on to the
 next round.
@@ -35,17 +37,20 @@ npm run build      # production build into dist/
 
 Requires Node 20.19+ (22 recommended).
 
-Handy URLs: `#meadow`, `#paddock`, `#lane`, `#rocky-yard` open a level directly, and
-`?seed=123` replays exactly the same game (any text works as a seed too).
+Handy URLs: `#meadow`, `#paddock`, `#lane`, `#rocky-yard` open a pen directly (once unlocked),
+`#daily` is today's challenge, and `?seed=123` replays exactly the same game of a pen (any text
+works as a seed too). On the dev server `?unlock=all` opens every pen.
 
 ## Architecture
 
 ```
 src/
   core/      pure game rules: cows, pens, exact packing solver, rounds, seeded RNG (no DOM)
-  game/      state machine for a run, scoring, and the controller that owns the one timer
+  game/      state machine for a run, scoring, the controller that owns the one timer,
+             and robot players used to balance the game
   input/     one hold gesture for mouse, touch, pen and keyboard
-  levels/    levels as validated data (ASCII layouts)
+  levels/    levels as validated data (ASCII layouts, spawn weights, star goals)
+  progress/  best scores, stars, unlocks, the daily challenge and a defensive localStorage store
   render/    the DOM view: scene layout maths, fence auto-tiling, herd, HUD, result panel
   screens/   the start screen
   styles/    plain CSS
@@ -56,6 +61,11 @@ src/
 - Every random decision goes through a seeded RNG, so the same seed gives the same game.
 - The view only reacts to state changes. Animations are CSS (transform and opacity only), driven
   by one `data-phase` attribute per cow, so there is no per-frame script.
+- Star goals are calibrated with simulated players (`game/simulate.ts`), and
+  `levels/balance.test.ts` fails when a rule or a level change makes them too easy or too hard.
+  They are a starting point: tune them after watching real people play.
+- Saves only hold raw best scores. Stars and unlocks are derived, so goals can be rebalanced
+  without migrating anybody's save, and a damaged save is repaired entry by entry.
 - Sprites are resolved to URLs up front, but the browser only downloads those that are shown.
 
 The project is being rewritten from Create React App + MobX to plain TypeScript + Vite.

@@ -1,4 +1,4 @@
-import { STARTING_LIVES, type GameState } from "../game";
+import { ROUNDS_PER_RUN, STARTING_LIVES, type GameState } from "../game";
 import { assetUrl } from "./assets";
 import { create, setAttr, setText, setVars, sprite } from "./dom";
 import { CALF_FILE } from "./spriteFiles";
@@ -6,17 +6,24 @@ import { revealDurationMs } from "./timing";
 
 export interface Hud {
   readonly element: HTMLElement;
-  update: (state: GameState) => void;
+  /** `best` is the best score on this board, counting the run in progress. */
+  update: (state: GameState, best: number) => void;
   destroy: () => void;
 }
 
+export interface HudOptions {
+  readonly title: string;
+  /** Goes in front of the round counter, e.g. "Daily · ". */
+  readonly prefix: string;
+}
+
 /** Level name, round, score, lives and the progress of the herd through the gate. */
-export function createHud(levelName: string): Hud {
+export function createHud({ title, prefix }: HudOptions): Hud {
   const back = create("a", "hud__back", ["←"]);
   back.href = "#";
-  back.setAttribute("aria-label", "Back to the levels");
+  back.setAttribute("aria-label", "Back to the menu");
 
-  const level = create("span", "hud__level", [levelName]);
+  const level = create("span", "hud__level", [title]);
   const round = create("span", "hud__round");
   const score = create("span", "hud__score");
   const streak = create("span", "hud__streak");
@@ -55,9 +62,14 @@ export function createHud(levelName: string): Hud {
     setAttr(progress, "aria-valuenow", String(value));
   };
 
-  const showStats = (state: GameState): void => {
+  const showStats = (state: GameState, best: number): void => {
     const { run } = state;
-    setText(round, `Round ${run.round}`);
+    // `run.round` is the round to be played next, so the screen of a finished run names the
+    // round that was just played instead.
+    const played = state.phase === "result" && state.final;
+    const shown = played ? run.round - 1 : Math.min(run.round, ROUNDS_PER_RUN);
+    const roundText = `${prefix}Round ${Math.max(shown, 1)} of ${ROUNDS_PER_RUN}`;
+    setText(round, best > 0 ? `${roundText} · Best ${best}` : roundText);
     setText(score, String(run.score));
     setText(streak, run.perfectStreak > 0 ? `Streak ${run.perfectStreak}` : "");
 
@@ -69,7 +81,7 @@ export function createHud(levelName: string): Hud {
 
   return {
     element,
-    update: (state) => {
+    update: (state, best) => {
       clearTimeout(pending);
       pending = undefined;
       showProgress(state);
@@ -79,12 +91,12 @@ export function createHud(levelName: string): Hud {
         const wait = revealDurationMs(state);
         if (wait > 0) {
           pending = setTimeout(() => {
-            showStats(state);
+            showStats(state, best);
           }, wait);
           return;
         }
       }
-      showStats(state);
+      showStats(state, best);
     },
     destroy: () => {
       clearTimeout(pending);

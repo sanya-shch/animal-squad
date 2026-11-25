@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { compileLevel, createRng, generateHerd, type Level } from "../core";
 import { createGameMachine, type GameEvent, type GameState } from "./machine";
-import { roundSeed, STARTING_LIVES } from "./run";
+import { ROUNDS_PER_RUN, roundSeed, STARTING_LIVES } from "./run";
 
 // A 2x2 pen and a herd of five plain cows: par is 4 cows for 4 points.
 const level: Level = compileLevel({
@@ -10,6 +10,7 @@ const level: Level = compileLevel({
   name: "Test",
   layout: ["..", ".."],
   herd: { size: 5, spawnWeights: { normal: 1 } },
+  goals: [5, 10, 20],
 });
 const machine = createGameMachine(level);
 
@@ -113,6 +114,32 @@ describe("game machine", () => {
       lives: STARTING_LIVES,
       perfectStreak: 0,
     });
+  });
+
+  it("ends the run after the last round, even when no life was lost", () => {
+    let state = machine.initialState(1);
+    for (let round = 1; round <= ROUNDS_PER_RUN; round++) {
+      state = run(state, hold, ...ticks(3), release);
+      if (round < ROUNDS_PER_RUN) {
+        expect(state.phase === "result" && state.final).toBe(false);
+        state = run(state, next);
+      }
+    }
+    expect(state.phase).toBe("result");
+    if (state.phase !== "result") return;
+    expect(state.final).toBe(true);
+    expect(state.run.lives).toBe(STARTING_LIVES);
+    expect(state.run.score).toBe(3 * ROUNDS_PER_RUN);
+    expect(machine.transition(state, next)).toBe(state);
+  });
+
+  it("does not count a retried empty round", () => {
+    let state = machine.initialState(1);
+    for (let attempt = 0; attempt < ROUNDS_PER_RUN + 2; attempt++) {
+      state = run(state, hold, release, next);
+    }
+    expect(state.phase).toBe("ready");
+    expect(state.run.round).toBe(1);
   });
 
   it("can restart from any phase", () => {

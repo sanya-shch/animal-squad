@@ -5,6 +5,9 @@ export const MAX_HERD_SIZE = 40;
 
 export type SpawnWeights = Readonly<Partial<Record<CowKindId, number>>>;
 
+/** Score needed for one, two and three stars on a level. */
+export type StarGoals = readonly [one: number, two: number, three: number];
+
 /** Hand-written level data. Cheap to author, validated by `compileLevel`. */
 export interface LevelDefinition {
   readonly id: string;
@@ -16,6 +19,8 @@ export interface LevelDefinition {
     /** Relative chance for each kind to show up in the herd. */
     readonly spawnWeights: SpawnWeights;
   };
+  /** Run scores that earn stars. Strictly increasing. */
+  readonly goals: StarGoals;
 }
 
 /** A validated, ready to play level. */
@@ -27,6 +32,7 @@ export interface Level {
     readonly size: number;
     readonly spawnWeights: SpawnWeights;
   };
+  readonly goals: StarGoals;
 }
 
 export class LevelError extends Error {
@@ -35,7 +41,7 @@ export class LevelError extends Error {
 
 /** Fails fast on broken data, so a typo in a level can never turn into a runtime surprise. */
 export function compileLevel(definition: LevelDefinition): Level {
-  const { id, name, layout, herd } = definition;
+  const { id, name, layout, herd, goals } = definition;
   const fail = (message: string, cause?: unknown): never => {
     throw new LevelError(`Level "${id}": ${message}`, cause === undefined ? undefined : { cause });
   };
@@ -68,7 +74,13 @@ export function compileLevel(definition: LevelDefinition): Level {
   }
   if (totalWeight <= 0) fail("at least one cow kind needs a positive spawn weight");
 
-  return { id, name, pen, herd: { size: herd.size, spawnWeights: herd.spawnWeights } };
+  const goalsAreValid =
+    goals.every((goal) => Number.isInteger(goal) && goal > 0) &&
+    goals[0] < goals[1] &&
+    goals[1] < goals[2];
+  if (!goalsAreValid) fail(`star goals must be positive integers in increasing order`);
+
+  return { id, name, pen, herd: { size: herd.size, spawnWeights: herd.spawnWeights }, goals };
 }
 
 export function compileLevels(definitions: readonly LevelDefinition[]): Level[] {

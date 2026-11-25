@@ -7,6 +7,7 @@ const valid: LevelDefinition = {
   name: "Test",
   layout: ["..", ".."],
   herd: { size: 5, spawnWeights: { normal: 1 } },
+  goals: [5, 10, 20],
 };
 
 describe("compileLevel", () => {
@@ -40,6 +41,15 @@ describe("compileLevel", () => {
     expect(() => compileLevel({ ...valid, id: " " })).toThrow(LevelError);
     const fractional = { ...valid, herd: { size: 5.5, spawnWeights: { normal: 1 } } };
     expect(() => compileLevel(fractional)).toThrow(LevelError);
+  });
+});
+
+describe("star goals", () => {
+  it("must be positive integers in strictly increasing order", () => {
+    for (const goals of [[0, 5, 10], [5, 5, 10], [10, 5, 20], [1.5, 3, 4], [5, 10, 8]] as const) {
+      expect(() => compileLevel({ ...valid, goals })).toThrow(LevelError);
+    }
+    expect(compileLevel({ ...valid, goals: [1, 2, 3] }).goals).toEqual([1, 2, 3]);
   });
 });
 

@@ -10,12 +10,14 @@ export const LEVEL_DEFINITIONS = [
     name: "Meadow",
     layout: ["...", "...", "..."],
     herd: { size: 12, spawnWeights: { normal: 8, fat: 2, twoHeaded: 2 } },
+    goals: [30, 50, 65],
   },
   {
     id: "paddock",
     name: "Paddock",
     layout: ["....", "....", "...."],
     herd: { size: 15, spawnWeights: { normal: 7, fat: 3, twoHeaded: 2 } },
+    goals: [40, 62, 80],
   },
   {
     // A narrow strip: fat cows have to be stacked or paired up just right.
@@ -23,11 +25,13 @@ export const LEVEL_DEFINITIONS = [
     name: "Lane",
     layout: ["..", "..", "..", "..", ".."],
     herd: { size: 13, spawnWeights: { normal: 6, fat: 4, twoHeaded: 2 } },
+    goals: [30, 48, 64],
   },
   {
     id: "rocky-yard",
     name: "Rocky Yard",
     layout: ["....-", ".#...", "...#.", "-...."],
     herd: { size: 18, spawnWeights: { normal: 6, fat: 4, twoHeaded: 3 } },
+    goals: [45, 80, 105],
   },
 ] as const satisfies readonly LevelDefinition[];
