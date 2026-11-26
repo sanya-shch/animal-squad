@@ -3,6 +3,7 @@ import { bestScore, levelBoard, levelStars, type SaveData } from "../progress";
 import { assetUrl } from "../render/assets";
 import { create, setVars, sprite } from "../render/dom";
 import { CALF_FILE, cowSpriteFile } from "../render/spriteFiles";
+import { plural } from "../render/text";
 
 const KIND_NAMES: Record<CowKindId, string> = {
   normal: "Cow",
@@ -10,11 +11,9 @@ const KIND_NAMES: Record<CowKindId, string> = {
   fat: "Fat",
 };
 
-const plural = (count: number, word: string): string => `${count} ${word}${count === 1 ? "" : "s"}`;
-
 export interface DailyInfo {
   readonly level: Level;
-  /** Best score today, or undefined if today's challenge has not been played yet. */
+  // Best score today, or undefined if today's challenge has not been played yet.
   readonly bestToday: number | undefined;
   readonly streak: number;
 }
@@ -24,7 +23,7 @@ export interface HomeOptions {
   readonly save: SaveData;
   readonly unlocked: ReadonlySet<string>;
   readonly daily: DailyInfo;
-  /** Called after the player confirmed that all progress should be erased. */
+  // Called after the player confirmed that all progress should be erased.
   readonly onReset: () => void;
 }
 
@@ -107,7 +106,7 @@ function dailyCard({ level, bestToday, streak }: DailyInfo): HTMLElement {
     "The same herds for everyone, today only",
     bestToday === undefined ? "Not played yet" : `Best today: ${bestToday}`,
   ];
-  if (streak > 0) facts.push(`${plural(streak, "day")} in a row`);
+  if (streak > 0) facts.push(`${streak}-day streak`);
 
   const card = create("a", "daily", [
     create("span", "daily__tag", ["Daily challenge"]),
@@ -119,7 +118,7 @@ function dailyCard({ level, bestToday, streak }: DailyInfo): HTMLElement {
   return card;
 }
 
-/** The start screen: what the cows are worth, today's challenge, and which pen to play. */
+// The start screen: what the cows are worth, today's challenge, and which pen to play.
 export function mountHome(root: HTMLElement, options: HomeOptions): () => void {
   const { levels, onReset } = options;
 

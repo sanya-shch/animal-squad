@@ -1,9 +1,7 @@
 import type { LevelDefinition } from "../core";
 
-/**
- * Layout alphabet: `.` pen square, `#` rock inside the pen, `-` outside the pen.
- * Herds are always bigger than the pen, so overflow is always possible.
- */
+// Layout alphabet: `.` pen square, `#` rock inside the pen, `-` outside the pen.
+// Herds are always bigger than the pen, so overflow is always possible.
 export const LEVEL_DEFINITIONS = [
   {
     id: "meadow",

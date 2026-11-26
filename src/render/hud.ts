@@ -6,21 +6,21 @@ import { revealDurationMs } from "./timing";
 
 export interface Hud {
   readonly element: HTMLElement;
-  /** `best` is the best score on this board, counting the run in progress. */
+  // `best` is the best score on this board, counting the run in progress.
   update: (state: GameState, best: number) => void;
-  /** Shows whether the sound is off. */
+  // Shows whether the sound is off.
   setMuted: (muted: boolean) => void;
   destroy: () => void;
 }
 
 export interface HudOptions {
   readonly title: string;
-  /** Goes in front of the round counter, e.g. "Daily · ". */
+  // Goes in front of the round counter, e.g. "Daily · ".
   readonly prefix: string;
   readonly onToggleSound: () => void;
 }
 
-/** Level name, round, score, lives and the progress of the herd through the gate. */
+// Level name, round, score, lives and the progress of the herd through the gate.
 export function createHud({ title, prefix, onToggleSound }: HudOptions): Hud {
   const back = create("a", "hud__back", ["←"]);
   back.href = "#";
@@ -80,7 +80,7 @@ export function createHud({ title, prefix, onToggleSound }: HudOptions): Hud {
     const roundText = `${prefix}Round ${Math.max(shown, 1)} of ${ROUNDS_PER_RUN}`;
     setText(round, best > 0 ? `${roundText} · Best ${best}` : roundText);
     setText(score, String(run.score));
-    setText(streak, run.perfectStreak > 0 ? `Streak ${run.perfectStreak}` : "");
+    setText(streak, run.perfectStreak > 0 ? `Perfect streak ${run.perfectStreak}` : "");
 
     if (run.lives === lastLives) return;
     lastLives = run.lives;

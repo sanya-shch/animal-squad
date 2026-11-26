@@ -4,9 +4,9 @@ import type { Pen } from "./pen";
 
 export type Stars = 1 | 2 | 3;
 
-/** The best possible result for a given pen and herd. */
+// The best possible result for a given pen and herd.
 export interface Par {
-  /** Largest number of cows from the front of the queue that still fit. */
+  // Largest number of cows from the front of the queue that still fit.
   readonly cows: number;
   readonly points: number;
 }
@@ -23,10 +23,8 @@ export type RoundResult =
       readonly par: Par;
     };
 
-/**
- * If a group of cows does not fit, adding more cows cannot make it fit, and every cow
- * is worth at least a point. So the best round is simply the longest queue prefix that fits.
- */
+// If a group of cows does not fit, adding more cows cannot make it fit, and every cow
+// is worth at least a point. So the best round is simply the longest queue prefix that fits.
 export function computePar(pen: Pen, herd: readonly Cow[]): Par {
   let cows = 0;
   for (let count = 1; count <= herd.length; count++) {
@@ -43,7 +41,7 @@ export function rateRound(points: number, parPoints: number): Stars {
   return 1;
 }
 
-/** Outcome of letting the first `admittedCount` cows of the herd into the pen. */
+// Outcome of letting the first `admittedCount` cows of the herd into the pen.
 export function resolveRound(pen: Pen, herd: readonly Cow[], admittedCount: number): RoundResult {
   if (!Number.isInteger(admittedCount) || admittedCount < 0 || admittedCount > herd.length) {
     throw new RangeError(`Cannot admit ${admittedCount} cows from a herd of ${herd.length}`);

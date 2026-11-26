@@ -3,7 +3,7 @@ import { emptySave, mergeSaves, parseSave, serializeSave, type SaveData } from "
 
 export const STORAGE_KEY = "animal-squad:progress";
 
-/** The part of `localStorage` that is used. */
+// The part of `localStorage` that is used.
 export interface KeyValueStore {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
@@ -23,10 +23,8 @@ export function createMemoryStorage(): KeyValueStore {
   };
 }
 
-/**
- * `localStorage` can be missing, blocked (private mode, cookies off) or full. Whatever goes
- * wrong, the game still plays and just remembers nothing after the tab is closed.
- */
+// `localStorage` can be missing, blocked (private mode, cookies off) or full. Whatever goes
+// wrong, the game still plays and just remembers nothing after the tab is closed.
 export function createBrowserStorage(): KeyValueStore {
   try {
     const storage = window.localStorage;
@@ -41,7 +39,7 @@ export function createBrowserStorage(): KeyValueStore {
 
 export interface ProgressStore {
   getSave: () => SaveData;
-  /** Remembers a score if it beats the best one. Returns whether it did. */
+  // Remembers a score if it beats the best one. Returns whether it did.
   recordScore: (board: Board, score: number) => boolean;
   reset: () => void;
 }

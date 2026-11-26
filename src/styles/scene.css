@@ -1,7 +1,7 @@
 /*
  * The scene is a grid of "squares" whose size is one CSS variable, --cell. Everything is placed
  * in squares, so the whole picture scales with the screen and needs no resize code.
- * --cols and --rows are set by the script; the height left over for the scene by --hud-height.
+ * The script sets --cols and --rows; --hud-height is the bar above, which the scene leaves free.
  */
 .scene {
   --cell: min(

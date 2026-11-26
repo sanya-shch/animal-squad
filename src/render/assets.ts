@@ -1,4 +1,4 @@
-// Vite turns every sprite into a URL up front but the browser only downloads the ones that
+// Vite turns every sprite into a URL up front, but the browser only downloads the ones that
 // an <img> actually uses, so unused skins cost nothing at runtime.
 const urls = import.meta.glob<string>("../assets/**/*.{png,webp}", {
   eager: true,
@@ -6,7 +6,7 @@ const urls = import.meta.glob<string>("../assets/**/*.{png,webp}", {
   import: "default",
 });
 
-/** URL of a file inside src/assets, e.g. "cow/cow_7.webp". */
+// URL of a file inside src/assets, e.g. "cow/cow_7.webp".
 export function assetUrl(file: string): string {
   const url = urls[`../assets/${file}`];
   if (url === undefined) throw new Error(`Missing asset: ${file}`);

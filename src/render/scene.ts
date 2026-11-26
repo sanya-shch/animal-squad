@@ -7,13 +7,13 @@ import { DECOR_FILES, fenceFile } from "./spriteFiles";
 export interface Scene {
   readonly element: HTMLElement;
   readonly layout: SceneLayout;
-  /** The layer the herd is added to. It shares the scene's depth sorting with the fence. */
+  // The layer the herd is added to. It shares the scene's depth sorting with the fence.
   readonly cowLayer: HTMLElement;
-  /** Knocks the fence down (or puts it back up). Cheap to call repeatedly. */
+  // Knocks the fence down (or puts it back up). Cheap to call repeatedly.
   setBroken: (broken: boolean) => void;
 }
 
-/** Things lower on the screen are drawn in front. `baseline` is where the sprite's feet are. */
+// Things lower on the screen are drawn in front. `baseline` is where the sprite's feet are.
 const depth = (y: number, baseline: number): number => Math.round((y + baseline) * 10);
 
 /**

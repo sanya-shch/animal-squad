@@ -1,15 +1,15 @@
 import type { Cow, Level } from "../core";
 import { createGameMachine } from "./machine";
 
-/** What a player can see at the gate: whether each calf looks like a mutant, not which kind. */
+// What a player can see at the gate: whether each calf looks like a mutant, not which kind.
 export interface PlayerView {
   readonly level: Level;
-  /** Cows already inside. */
+  // Cows already inside.
   readonly admitted: number;
   readonly silhouettes: readonly ("calf" | "mutant")[];
 }
 
-/** Decides, before each cow, whether to keep the gate open. */
+// Decides, before each cow, whether to keep the gate open.
 export type Policy = (view: PlayerView) => boolean;
 
 const silhouettesOf = (herd: readonly Cow[]): ("calf" | "mutant")[] =>
@@ -18,7 +18,8 @@ const silhouettesOf = (herd: readonly Cow[]): ("calf" | "mutant")[] =>
 /**
  * Plays a whole run with a robot player, using nothing but the public state machine.
  * Used to calibrate the star goals and to prove that the levels are neither impossible
- * nor trivial. `maxRounds` bounds the run: a perfect robot would never run out of lives.
+ * nor trivial. `maxRounds` is a safety net for a player who never lets anybody in: such
+ * rounds are replayed and do not count towards the run.
  */
 export function simulateRun(
   level: Level,
@@ -46,16 +47,14 @@ export function simulateRun(
   return { score: state.run.score, rounds: state.run.round - 1 };
 }
 
-/** Always lets in exactly `count` cows. The most timid player there is, for `count` = 1. */
+// Always lets in exactly `count` cows. The most timid player there is, for `count` = 1.
 export const fixedCount =
   (count: number): Policy =>
   ({ admitted }) =>
     admitted < count;
 
-/**
- * A sensible human: estimates how many squares are taken (a mutant counts as the average
- * mutant of this level) and stops once `fill` of the pen is full. Lower means more careful.
- */
+// A sensible human: estimates how many squares are taken (a mutant counts as the average
+// mutant of this level) and stops once `fill` of the pen is full. Lower means more careful.
 export function expectedFill(level: Level, fill: number): Policy {
   const { fat = 0, twoHeaded = 0 } = level.herd.spawnWeights;
   const mutants = fat + twoHeaded;
@@ -68,10 +67,8 @@ export function expectedFill(level: Level, fill: number): Policy {
   };
 }
 
-/**
- * Humans are not instant: by the time the finger lifts, `lag` more cows have walked in.
- * Wraps a policy so that its "stop" only takes effect `lag` cows later.
- */
+// Humans are not instant: by the time the finger lifts, `lag` more cows have walked in.
+// Wraps a policy so that its "stop" only takes effect `lag` cows later.
 export function withLag(policy: Policy, lag: number): Policy {
   let stoppedAt: number | undefined;
   let lastSeen = Number.POSITIVE_INFINITY;

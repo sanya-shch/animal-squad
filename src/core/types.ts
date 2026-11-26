@@ -3,5 +3,5 @@ export interface Cell {
   readonly y: number;
 }
 
-/** What a single grid square is made of. Only "pen" squares can hold cows. */
+// What a single grid square is made of. Only "pen" squares can hold cows.
 export type Terrain = "pen" | "rock" | "outside";

@@ -1,15 +1,15 @@
 import type { Terrain } from "./types";
 
 export const MAX_PEN_SIDE = 12;
-/** The packing search is exact, so keep pens small enough for it to stay instant. */
+// The packing search is exact, so keep pens small enough for it to stay instant.
 export const MAX_PEN_CAPACITY = 36;
 
 export interface Pen {
   readonly width: number;
   readonly height: number;
-  /** Row-major: the terrain of square (x, y) is `terrain[y * width + x]`. */
+  // Row-major: the terrain of square (x, y) is `terrain[y * width + x]`.
   readonly terrain: readonly Terrain[];
-  /** Number of squares that can hold cows. */
+  // Number of squares that can hold cows.
   readonly capacity: number;
 }
 
@@ -62,7 +62,7 @@ export function parseLayout(rows: readonly string[]): Pen {
   return { width, height, terrain, capacity };
 }
 
-/** Terrain at (x, y); everything beyond the grid counts as "outside". */
+// Terrain at (x, y); everything beyond the grid counts as "outside".
 export function terrainAt(pen: Pen, x: number, y: number): Terrain {
   if (x < 0 || y < 0 || x >= pen.width || y >= pen.height) return "outside";
   return pen.terrain[y * pen.width + x] ?? "outside";

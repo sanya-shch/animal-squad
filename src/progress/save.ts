@@ -17,7 +17,7 @@ export const emptySave = (): SaveData => ({ levels: new Map(), daily: new Map() 
 const LEVEL_KEY = /^[a-z0-9][a-z0-9-]{0,39}$/;
 export const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Pairs rather than an object, so a key like "__proto__" in a damaged save is just a string. */
+// Pairs rather than an object, so a key like "__proto__" in a damaged save is just a string.
 export function serializeSave(save: SaveData): string {
   return JSON.stringify({ v: SAVE_VERSION, levels: [...save.levels], daily: [...save.daily] });
 }
@@ -61,7 +61,7 @@ export function parseSave(raw: string | null): SaveData {
   };
 }
 
-/** The best of two saves, entry by entry. Two tabs can never wipe out each other's records. */
+// The best of two saves, entry by entry. Two tabs can never wipe out each other's records.
 export function mergeSaves(a: SaveData, b: SaveData): SaveData {
   const best = (x: ReadonlyMap<string, number>, y: ReadonlyMap<string, number>) => {
     const merged = new Map(x);

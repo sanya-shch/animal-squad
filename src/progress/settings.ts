@@ -8,7 +8,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = { muted: false };
 
-/** Defensive like the save: anything unexpected falls back to the defaults. */
+// Defensive like the save: anything unexpected falls back to the defaults.
 export function parseSettings(raw: string | null): Settings {
   if (raw === null) return DEFAULT_SETTINGS;
   try {

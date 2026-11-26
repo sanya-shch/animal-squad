@@ -18,7 +18,7 @@ const CONTENT_SECURITY_POLICY = [
   "form-action 'none'",
 ].join("; ");
 
-/** Only for the production build: the dev server injects inline scripts for hot reload. */
+// Only for the production build: the dev server injects inline scripts for hot reload.
 function contentSecurityPolicy(): Plugin {
   return {
     name: "content-security-policy",

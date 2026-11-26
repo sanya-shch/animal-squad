@@ -5,25 +5,25 @@ export const MAX_HERD_SIZE = 40;
 
 export type SpawnWeights = Readonly<Partial<Record<CowKindId, number>>>;
 
-/** Score needed for one, two and three stars on a level. */
+// Score needed for one, two and three stars on a level.
 export type StarGoals = readonly [one: number, two: number, three: number];
 
-/** Hand-written level data. Cheap to author, validated by `compileLevel`. */
+// Hand-written level data. Cheap to author, validated by `compileLevel`.
 export interface LevelDefinition {
   readonly id: string;
   readonly name: string;
-  /** See `parseLayout` for the alphabet. */
+  // See `parseLayout` for the alphabet.
   readonly layout: readonly string[];
   readonly herd: {
     readonly size: number;
-    /** Relative chance for each kind to show up in the herd. */
+    // Relative chance for each kind to show up in the herd.
     readonly spawnWeights: SpawnWeights;
   };
-  /** Run scores that earn stars. Strictly increasing. */
+  // Run scores that earn stars. Strictly increasing.
   readonly goals: StarGoals;
 }
 
-/** A validated, ready to play level. */
+// A validated, ready-to-play level.
 export interface Level {
   readonly id: string;
   readonly name: string;
@@ -39,7 +39,7 @@ export class LevelError extends Error {
   override name = "LevelError";
 }
 
-/** Fails fast on broken data, so a typo in a level can never turn into a runtime surprise. */
+// Fails fast on broken data, so a typo in a level can never turn into a runtime surprise.
 export function compileLevel(definition: LevelDefinition): Level {
   const { id, name, layout, herd, goals } = definition;
   const fail = (message: string, cause?: unknown): never => {

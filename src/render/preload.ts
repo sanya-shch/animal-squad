@@ -1,4 +1,4 @@
-/** Remembers what it has already asked for, so every URL is requested once. */
+// Remembers what it has already asked for, so every URL is requested once.
 export type Preloader = (urls: readonly string[]) => number;
 
 /**

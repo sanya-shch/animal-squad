@@ -101,7 +101,7 @@ describe("findPacking", () => {
   });
 });
 
-/** Deliberately naive: tries every position of every cow with no pruning of any kind. */
+// Deliberately naive: tries every position of every cow with no pruning of any kind.
 function bruteForceFits(p: Pen, cows: readonly Cow[]): boolean {
   const taken = p.terrain.map((square) => square !== "pen");
 

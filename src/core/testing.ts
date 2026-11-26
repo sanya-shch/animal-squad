@@ -7,12 +7,12 @@ export function pen(...rows: string[]): Pen {
   return parseLayout(rows);
 }
 
-/** Builds a queue of cows with consecutive ids, e.g. herdOf("normal", "twoHeaded"). */
+// Builds a queue of cows with consecutive ids, e.g. herdOf("normal", "twoHeaded").
 export function herdOf(...kinds: CowKindId[]): Cow[] {
   return kinds.map((kind, id) => ({ id, kind, skin: 0 }));
 }
 
-/** Throws unless the placements are a legal arrangement of exactly these cows in this pen. */
+// Throws unless the placements are a legal arrangement of exactly these cows in this pen.
 export function assertValidPacking(p: Pen, cows: readonly Cow[], placements: readonly Placement[]) {
   if (placements.length !== cows.length) throw new Error("Every cow needs exactly one placement");
 
@@ -44,7 +44,7 @@ export function assertValidPacking(p: Pen, cows: readonly Cow[], placements: rea
   }
 }
 
-/** Total number of squares occupied by these cows. */
+// Total number of squares occupied by these cows.
 export function squaresNeeded(cows: readonly Cow[]): number {
   return cows.reduce((sum, cow) => sum + COW_KINDS[cow.kind].shapes[0].length, 0);
 }

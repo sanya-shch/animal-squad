@@ -4,18 +4,18 @@
  * and a "daily challenge" mode for free.
  */
 export interface Rng {
-  /** Float in [0, 1). */
+  // Float in [0, 1).
   next(): number;
-  /** Integer in [min, max], both inclusive. */
+  // Integer in [min, max], both inclusive.
   int(min: number, max: number): number;
   pick<T>(items: readonly T[]): T;
-  /** Picks a key with probability proportional to its weight. Zero weights are never picked. */
+  // Picks a key with probability proportional to its weight. Zero weights are never picked.
   weighted<K extends string>(weights: Readonly<Partial<Record<K, number>>>): K;
-  /** Unbiased Fisher–Yates shuffle. Returns a new array. */
+  // Unbiased Fisher–Yates shuffle. Returns a new array.
   shuffle<T>(items: readonly T[]): T[];
 }
 
-/** mulberry32: tiny, fast, good enough statistical quality for a game. */
+// mulberry32: tiny, fast, good enough statistical quality for a game.
 export function createRng(seed: number): Rng {
   let state = seed >>> 0;
 
@@ -69,7 +69,7 @@ export function createRng(seed: number): Rng {
   return { next, int, pick, weighted, shuffle };
 }
 
-/** Turns any string ("2026-11-23" for a daily challenge) into a 32-bit seed. */
+// Turns any string ("2026-11-23" for a daily challenge) into a 32-bit seed.
 export function hashSeed(text: string): number {
   let h = 1779033703 ^ text.length;
   for (let i = 0; i < text.length; i++) {

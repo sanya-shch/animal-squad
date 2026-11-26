@@ -4,17 +4,17 @@ export interface AudioEngine {
   play: (cues: readonly Cue[]) => void;
   setMuted: (muted: boolean) => void;
   isMuted: () => boolean;
-  /** Call from inside a user gesture: browsers keep audio locked until the player acts. */
+  // Call from inside a user gesture: browsers keep audio locked until the player acts.
   unlock: () => void;
   dispose: () => void;
 }
 
-/** What the game view needs from the sound system. */
+// What the game view needs from the sound system.
 export type SoundControl = Pick<AudioEngine, "play" | "isMuted" | "setMuted">;
 
 export interface EngineOptions {
   readonly muted?: boolean;
-  /** Where the audio context comes from. Tests pass a fake one. */
+  // Where the audio context comes from. Tests pass a fake one.
   readonly createContext?: () => AudioContext | undefined;
 }
 
@@ -72,7 +72,7 @@ function noise(ctx: AudioContext, out: AudioNode, start: number, duration: numbe
 
 const NOTES = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
 
-/** Every sound is a few oscillators: no audio files to download. */
+// Every sound is a few oscillators: no audio files to download.
 const SYNTHS: Record<SoundName, Synth> = {
   open: (ctx, out, start) =>
     tone(ctx, out, { type: "triangle", from: 200, to: 340, start, duration: 0.12, gain: 0.1 }),

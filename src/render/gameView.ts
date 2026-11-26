@@ -14,21 +14,19 @@ import { createScene } from "./scene";
 import { herdSpriteFiles } from "./spriteFiles";
 import { revealDurationMs } from "./timing";
 
-/** Shared by every game: a sprite fetched for one pen is already there for the next. */
+// Shared by every game: a sprite fetched for one pen is already there for the next.
 const preloadImages = createPreloader();
 
 export interface GameViewOptions {
   readonly session: PlaySession;
   readonly progress: ProgressStore;
-  /** All pens, in order. Needed to tell the player which pens a run has opened. */
+  // All pens, in order. Needed to tell the player which pens a run has opened.
   readonly levels: readonly Level[];
   readonly sound: SoundControl;
 }
 
-/**
- * Mounts one playable session into `root` and returns a function that tears it down again.
- * The game is the single source of truth; every part of the view just reacts to its state.
- */
+// Mounts one playable session into `root` and returns a function that tears it down again.
+// The game is the single source of truth; every part of the view just reacts to its state.
 export function mountGame(root: HTMLElement, options: GameViewOptions): () => void {
   const { session, progress, levels, sound } = options;
   const { level, board } = session;
@@ -51,7 +49,7 @@ export function mountGame(root: HTMLElement, options: GameViewOptions): () => vo
   const herd = createHerdView(scene, level);
   const panel = createPanel(game.next);
 
-  const hint = create("p", "hint", ["Press and hold to let the cows in"]);
+  const hint = create("p", "hint", ["Hold anywhere (or Space) to let the cows in"]);
   // Only the stage listens for the hold, so the buttons around it are never captured by it.
   const stage = create("main", "stage", [scene.element, hint]);
   const page = create("div", "game", [hud.element, stage, panel.element, panel.status]);

@@ -28,14 +28,12 @@ function readSeed(params: URLSearchParams): number {
 export interface AppOptions {
   readonly progress?: ProgressStore;
   readonly audio?: AudioEngine;
-  /** The current time. Injectable so that tests can pretend it is another day. */
+  // The current time. Injectable so that tests can pretend it is another day.
   readonly now?: () => Date;
 }
 
-/**
- * Two screens, picked by the URL hash: "#meadow" plays that pen, "#daily" plays today's
- * challenge, anything else is the menu. Pens that are still locked go back to the menu.
- */
+// Two screens, picked by the URL hash: "#meadow" plays that pen, "#daily" plays today's
+// challenge, anything else is the menu. Pens that are still locked go back to the menu.
 export function startApp(
   root: HTMLElement,
   levels: readonly Level[],
@@ -134,7 +132,7 @@ export function startApp(
   };
 }
 
-/** `?unlock=all` opens every pen, but only on the dev server: it is a testing aid, not a cheat. */
+// `?unlock=all` opens every pen, but only on the dev server: it is a testing aid, not a cheat.
 function allUnlocked(): boolean {
   return import.meta.env.DEV && new URLSearchParams(location.search).get("unlock") === "all";
 }

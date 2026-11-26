@@ -3,7 +3,7 @@ import type { Run } from "./run";
 
 export interface ScoredRound {
   readonly run: Run;
-  /** Points added to the score by this round. */
+  // Points added to the score by this round.
   readonly gained: number;
 }
 

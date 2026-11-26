@@ -13,7 +13,7 @@ const level = compileLevel({
   goals: [5, 10, 20],
 });
 
-/** A clock that only moves when the test says so. */
+// A clock that only moves when the test says so.
 function manualScheduler() {
   const active = new Map<number, () => void>();
   let nextId = 0;
@@ -32,7 +32,7 @@ function manualScheduler() {
   };
   return {
     scheduler,
-    /** Advances time by one interval. */
+    // Advances time by one interval.
     tick: () => {
       for (const callback of [...active.values()]) callback();
     },

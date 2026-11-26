@@ -1,27 +1,28 @@
 import type { GameState } from "../game";
 import { create, setAttr, setText, setVars } from "./dom";
+import { plural } from "./text";
 import { revealDurationMs } from "./timing";
 
 export interface Panel {
   readonly element: HTMLElement;
-  /** A line for screen readers: what just happened. */
+  // A line for screen readers: what just happened.
   readonly status: HTMLElement;
-  /** `final` says how the run went compared with earlier ones. Only used when the run ended. */
+  // `final` says how the run went compared with earlier ones. Only used when the run ended.
   update: (state: GameState, final: FinalExtras | undefined) => void;
 }
 
-/** What the end-of-run panel adds to the plain result. */
+// What the end-of-run panel adds to the plain result.
 export interface FinalExtras {
   readonly isNewBest: boolean;
   readonly best: number;
-  /** Stars on this pen after the run. Undefined where there are none (the daily challenge). */
+  // Stars on this pen after the run. Undefined where there are none (the daily challenge).
   readonly stars: number | undefined;
   readonly nextGoal: number | undefined;
-  /** Names of the pens that this run opened. */
+  // Names of the pens that this run opened.
   readonly unlocked: readonly string[];
 }
 
-interface Summary {
+export interface Summary {
   readonly title: string;
   readonly lines: readonly string[];
   readonly stars: number | undefined;
@@ -29,14 +30,16 @@ interface Summary {
   readonly button: string;
 }
 
-type ResultState = Extract<GameState, { phase: "result" }>;
+export type ResultState = Extract<GameState, { phase: "result" }>;
 
 function summarizeFinal(state: ResultState, extras: FinalExtras | undefined): Summary {
   const { run } = state;
   const lines = [`Final score: ${run.score}`];
   if (extras) {
     lines.push(extras.isNewBest ? "New best!" : `Best: ${extras.best}`);
-    if (extras.nextGoal !== undefined) lines.push(`Next star at ${extras.nextGoal} points`);
+    if (extras.nextGoal !== undefined) {
+      lines.push(`Next star at ${plural(extras.nextGoal, "point")}`);
+    }
     else if (extras.stars === 3) lines.push("All three stars earned");
     for (const name of extras.unlocked) lines.push(`${name} unlocked`);
   }
@@ -49,11 +52,12 @@ function summarizeFinal(state: ResultState, extras: FinalExtras | undefined): Su
   };
 }
 
-function summarize(state: ResultState, extras: FinalExtras | undefined): Summary {
+export function summarize(state: ResultState, extras: FinalExtras | undefined): Summary {
   if (state.final) return summarizeFinal(state, extras);
 
   const { result, gained } = state;
-  const par = `Best possible: ${result.par.points} points with ${result.par.cows} cows.`;
+  const best = `${plural(result.par.points, "point")} with ${plural(result.par.cows, "cow")}`;
+  const par = `Best possible: ${best}.`;
   const button = "Next round";
 
   switch (result.status) {
@@ -68,7 +72,7 @@ function summarize(state: ResultState, extras: FinalExtras | undefined): Summary
     case "overflow":
       return {
         title: "The fence broke!",
-        lines: [`You let in ${result.admitted.length} cows and lost a life.`, par],
+        lines: [`You let in ${plural(result.admitted.length, "cow")} and lost a life.`, par],
         stars: undefined,
         starsLabel: "",
         button,
@@ -78,7 +82,9 @@ function summarize(state: ResultState, extras: FinalExtras | undefined): Summary
       return {
         title: result.stars === 3 ? "Perfect!" : "Safe!",
         lines: [
-          bonus > 0 ? `+${gained} points (streak bonus +${bonus})` : `+${gained} points`,
+          bonus > 0
+            ? `+${plural(gained, "point")} (streak bonus +${bonus})`
+            : `+${plural(gained, "point")}`,
           result.stars === 3 ? "You could not have fit more." : par,
         ],
         stars: result.stars,
@@ -89,7 +95,7 @@ function summarize(state: ResultState, extras: FinalExtras | undefined): Summary
   }
 }
 
-/** The bottom sheet that appears once the herd has grown up. */
+// The bottom sheet that appears once the herd has grown up.
 export function createPanel(onNext: () => void): Panel {
   const title = create("h2", "panel__title");
   const stars = create("div", "panel__stars");

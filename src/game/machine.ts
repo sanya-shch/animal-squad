@@ -10,51 +10,49 @@ import { isRunOver, roundSeed, startRun, type Run } from "./run";
 import { scoreRound } from "./scoring";
 
 export type GameState =
-  /** A herd is waiting at the gate. */
+  // A herd is waiting at the gate.
   | { readonly phase: "ready"; readonly run: Run; readonly herd: readonly Cow[] }
-  /** The player is holding the gate open and cows are walking in, one per tick. */
+  // The player is holding the gate open and cows are walking in, one per tick.
   | {
       readonly phase: "admitting";
       readonly run: Run;
       readonly herd: readonly Cow[];
       readonly admitted: number;
     }
-  /** The round is over. `run` already includes its outcome. */
+  // The round is over. `run` already includes its outcome.
   | {
       readonly phase: "result";
       readonly run: Run;
       readonly herd: readonly Cow[];
       readonly result: RoundResult;
       readonly gained: number;
-      /** True when this round ended the run: the last life or the last round. */
+      // True when this round ended the run: the last life or the last round.
       readonly final: boolean;
     };
 
 type AdmittingState = Extract<GameState, { phase: "admitting" }>;
 
 export type GameEvent =
-  /** Pointer down / key down: open the gate. */
+  // Pointer down / key down: open the gate.
   | { readonly type: "hold" }
-  /** Time passes: the next cow walks in. */
+  // Time passes: the next cow walks in.
   | { readonly type: "tick" }
-  /** Pointer up / key up: close the gate. */
+  // Pointer up / key up: close the gate.
   | { readonly type: "release" }
-  /** Leave the result screen for the next round. */
+  // Leave the result screen for the next round.
   | { readonly type: "next" }
-  /** Abandon everything and start a new run. */
+  // Abandon everything and start a new run.
   | { readonly type: "restart"; readonly seed: number };
 
-/** The herd of the round `run` is about to play. The same run always gives the same herd. */
+// The herd of the round `run` is about to play. The same run always gives the same herd.
 export function herdForRound(level: Level, run: Run): Cow[] {
   return generateHerd(level, createRng(roundSeed(run)));
 }
 
 export interface GameMachine {
   initialState: (seed: number) => GameState;
-  /**
-   * Pure: no timers, no randomness, no DOM. Events that make no sense in the current phase
-   * return the very same state object, so callers can detect "nothing happened" with `===`.
-   */
+  // Pure: no timers, no randomness, no DOM. Events that make no sense in the current phase
+  // return the very same state object, so callers can detect "nothing happened" with `===`.
   transition: (state: GameState, event: GameEvent) => GameState;
 }
 

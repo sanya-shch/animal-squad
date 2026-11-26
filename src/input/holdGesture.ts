@@ -1,16 +1,16 @@
-/** An element that can capture the pointer. `HTMLElement` fits; tests use a plain `EventTarget`. */
+// An element that can capture the pointer. `HTMLElement` fits; tests use a plain `EventTarget`.
 export interface PointerSurface extends EventTarget {
   setPointerCapture?(pointerId: number): void;
 }
 
 export interface HoldGestureOptions {
-  /** The pad the player presses. */
+  // The pad the player presses.
   readonly target: PointerSurface;
   readonly onHold: () => void;
   readonly onRelease: () => void;
-  /** Receives Space presses and blur. Defaults to `window`. */
+  // Receives Space presses and blur. Defaults to `window`.
   readonly keyTarget?: EventTarget;
-  /** Told when the tab gets hidden. Defaults to `document`. */
+  // Told when the tab gets hidden. Defaults to `document`.
   readonly page?: EventTarget & { readonly hidden: boolean };
 }
 

@@ -3,7 +3,7 @@ import { DATE_KEY, type SaveData } from "./save";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** The date everybody agrees on: UTC, so the whole world plays the same day's challenge. */
+// The date everybody agrees on: UTC, so the whole world plays the same day's challenge.
 export function dailyKey(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
@@ -20,13 +20,13 @@ export function previousDay(key: string): string {
   return dailyKey(new Date(parseDay(key) - DAY_MS));
 }
 
-/** The same date always gives the same seed, so every player gets exactly the same herds. */
+// The same date always gives the same seed, so every player gets exactly the same herds.
 export function dailySeed(key: string): number {
   parseDay(key);
   return hashSeed(`daily:${key}`);
 }
 
-/** The pen of the day. Any pen can come up, whether or not you have unlocked it yet. */
+// The pen of the day. Any pen can come up, whether or not you have unlocked it yet.
 export function dailyLevel(levels: readonly Level[], key: string): Level {
   parseDay(key);
   const level = levels[hashSeed(`daily-level:${key}`) % levels.length];
@@ -34,10 +34,8 @@ export function dailyLevel(levels: readonly Level[], key: string): Level {
   return level;
 }
 
-/**
- * Days in a row with a daily score, counting back from today. A streak that is still alive
- * (yesterday was played, today not yet) keeps counting until the day is over.
- */
+// Days in a row with a daily score, counting back from today. A streak that is still alive
+// (yesterday was played, today not yet) keeps counting until the day is over.
 export function dailyStreak(save: SaveData, today: string): number {
   let day = save.daily.has(today) ? today : previousDay(today);
   let streak = 0;

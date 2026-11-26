@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Cue } from "./cues";
 import { createAudioEngine } from "./engine";
 
-/** Just enough of the Web Audio API to see what the engine asks for. */
+// Just enough of the Web Audio API to see what the engine asks for.
 function fakeContext(initial: "running" | "suspended" = "running") {
   const log = { oscillatorStarts: [] as number[], noiseStarts: 0, resumed: 0, closed: 0 };
   const param = () => ({

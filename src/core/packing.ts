@@ -7,7 +7,7 @@ export interface Placement {
   readonly cells: readonly Cell[];
 }
 
-/** Upper bound for the number of orientations of any kind; used to order search positions. */
+// Upper bound for the number of orientations of any kind; used to order search positions.
 const SHAPE_STRIDE = Math.max(...Object.values(COW_KINDS).map((kind) => kind.shapes.length));
 
 /**

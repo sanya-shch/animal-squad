@@ -2,7 +2,7 @@ import { COW_KINDS, type Cow, type CowKindId } from "../core";
 
 // Where each sprite lives inside src/assets. Pure strings, so this is easy to test.
 
-/** The art for each kind of cow. Mutants have their own numbering (cow_01 .. cow_04). */
+// The art for each kind of cow. Mutants have their own numbering (cow_01 .. cow_04).
 const COW_FILE: Record<CowKindId, (skin: number) => string> = {
   normal: (skin) => `cow/cow_${skin + 1}.webp`,
   fat: (skin) => `cow/cow_0${skin + 1}.webp`,
@@ -16,7 +16,7 @@ export function cowSpriteFile(kind: CowKindId, skin: number): string {
   return COW_FILE[kind](skin);
 }
 
-/** The little calf icons the herd wears before it grows up. */
+// The little calf icons the herd wears before it grows up.
 export const CALF_FILE = "cow.webp";
 export const MUTANT_CALF_FILE = "cow_color.webp";
 
@@ -24,7 +24,7 @@ export function calfFile(kind: CowKindId): string {
   return kind === "normal" ? CALF_FILE : MUTANT_CALF_FILE;
 }
 
-/** Every file needed to show this herd, each listed once. */
+// Every file needed to show this herd, each listed once.
 export function herdSpriteFiles(herd: readonly Cow[]): string[] {
   const files = herd.flatMap((cow) => [cowSpriteFile(cow.kind, cow.skin), calfFile(cow.kind)]);
   return [...new Set(files)];

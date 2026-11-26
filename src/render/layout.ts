@@ -2,9 +2,9 @@ import { terrainAt, type Cell, type CowKindId, type Pen, type Rng } from "../cor
 
 // Everything here is measured in squares of the pen grid, with (0, 0) at the scene's top-left.
 
-/** Squares between the scene edge and the pen: one for the fence, one to breathe. */
+// Squares between the scene edge and the pen: one for the fence, one to breathe.
 export const SCENE_MARGIN = 2;
-/** Rows below the fence where the herd waits for its turn. */
+// Rows below the fence where the herd waits for its turn.
 export const YARD_ROWS = 3;
 
 export interface Point {
@@ -15,7 +15,7 @@ export interface Point {
 export interface FenceTile {
   readonly x: number;
   readonly y: number;
-  /** Which of the 11 fence sprites to draw (1 to 11). */
+  // Which of the 11 fence sprites to draw (1 to 11).
   readonly tile: number;
 }
 
@@ -29,12 +29,12 @@ export interface Yard {
 export interface SceneLayout {
   readonly cols: number;
   readonly rows: number;
-  /** Scene position of the pen's top-left square. */
+  // Scene position of the pen's top-left square.
   readonly origin: Point;
   readonly fence: readonly FenceTile[];
-  /** Middle of the opening in the fence, where cows walk through. */
+  // Middle of the opening in the fence, where cows walk through.
   readonly gate: Point;
-  /** Where cows wait: the area below the fence. */
+  // Where cows wait: the area below the fence.
   readonly yard: Yard;
 }
 
@@ -62,10 +62,8 @@ export function fenceTileFor(
 
 const keyOf = (x: number, y: number): string => `${x},${y}`;
 
-/**
- * Builds the scene around a pen: a fence that follows the pen's outline (whatever its shape),
- * a gate in the middle of the lowest straight stretch of fence, and the yard below it.
- */
+// Builds the scene around a pen: a fence that follows the pen's outline (whatever its shape),
+// a gate in the middle of the lowest straight stretch of fence, and the yard below it.
 export function layoutScene(pen: Pen): SceneLayout {
   const { width, height } = pen;
   const isInside = (x: number, y: number): boolean => terrainAt(pen, x, y) !== "outside";
@@ -110,10 +108,8 @@ export function layoutScene(pen: Pen): SceneLayout {
   };
 }
 
-/**
- * Removes the gate's posts from `posts` and returns the middle of the opening.
- * The gate goes into the lowest wall that has open pen floor right behind it.
- */
+// Removes the gate's posts from `posts` and returns the middle of the opening.
+// The gate goes into the lowest wall that has open pen floor right behind it.
 function openGate(pen: Pen, posts: Map<string, Point>): Point {
   const candidates = [...posts.values()].filter(({ x, y }) => terrainAt(pen, x, y - 1) === "pen");
   if (candidates.length === 0) {
@@ -147,16 +143,14 @@ function openGate(pen: Pen, posts: Map<string, Point>): Point {
   return { x: first.x + gateWidth / 2, y: first.y + 0.5 };
 }
 
-/**
- * A gate has the same parity as the wall it sits in, so that it can be exactly centred:
- * one square in a short odd wall, three in a long one, two in an even wall.
- */
+// A gate has the same parity as the wall it sits in, so that it can be exactly centred:
+// one square in a short odd wall, three in a long one, two in an even wall.
 function gateWidthFor(wallLength: number): number {
   if (wallLength % 2 === 0) return Math.min(2, wallLength);
   return wallLength >= 5 ? 3 : 1;
 }
 
-/** Pen squares that can hold cows, as scene coordinates of their top-left corner. */
+// Pen squares that can hold cows, as scene coordinates of their top-left corner.
 export function penSquares(pen: Pen, origin: Point): Point[] {
   const squares: Point[] = [];
   for (let y = 0; y < pen.height; y++) {
@@ -167,10 +161,8 @@ export function penSquares(pen: Pen, origin: Point): Point[] {
   return squares;
 }
 
-/**
- * Spots for the waiting calves, nearest to the gate first: the first cow in the queue
- * stands closest to the gate, because it is the first one through.
- */
+// Spots for the waiting calves, nearest to the gate first: the first cow in the queue
+// stands closest to the gate, because it is the first one through.
 export function queueSpots(layout: SceneLayout, count: number, rng: Rng): Point[] {
   const { left, right, top, bottom } = layout.yard;
   const stepX = 0.85;
@@ -195,7 +187,7 @@ export function queueSpots(layout: SceneLayout, count: number, rng: Rng): Point[
   return spots.sort((a, b) => distance(a) - distance(b)).slice(0, count);
 }
 
-/** Where an admitted calf stands inside the pen until the gate closes. */
+// Where an admitted calf stands inside the pen until the gate closes.
 export function crowdSpot(squares: readonly Point[], rng: Rng): Point {
   const square = rng.pick(squares);
   return {
@@ -204,10 +196,8 @@ export function crowdSpot(squares: readonly Point[], rng: Rng): Point {
   };
 }
 
-/**
- * Where a cow ends up when the fence gives way: pushed away from the middle of the pen,
- * but kept inside the scene.
- */
+// Where a cow ends up when the fence gives way: pushed away from the middle of the pen,
+// but kept inside the scene.
 export function burstSpot(layout: SceneLayout, from: Point, rng: Rng): Point {
   const middle: Point = { x: layout.cols / 2, y: (layout.origin.y + layout.yard.top) / 2 };
   const push = 1.25 + rng.next() * 0.5;
@@ -219,7 +209,7 @@ export function burstSpot(layout: SceneLayout, from: Point, rng: Rng): Point {
   };
 }
 
-/** How big the full-grown sprite of each kind is drawn, in squares (the art is square). */
+// How big the full-grown sprite of each kind is drawn, in squares (the art is square).
 export const SPRITE_SIZE = {
   normal: 1.1,
   twoHeaded: 1.15,
@@ -227,13 +217,13 @@ export const SPRITE_SIZE = {
 } as const satisfies Record<CowKindId, number>;
 
 export interface SpriteGeometry {
-  /** Middle of the squares the cow stands on. */
+  // Middle of the squares the cow stands on.
   readonly centre: Point;
-  /** Side of the square sprite, in squares. */
+  // Side of the square sprite, in squares.
   readonly size: number;
-  /** Shift of the sprite's middle relative to `centre`: cows stand on the bottom edge. */
+  // Shift of the sprite's middle relative to `centre`: cows stand on the bottom edge.
   readonly offsetY: number;
-  /** The art faces sideways, so a cow standing lengthways along the pen is turned a quarter. */
+  // The art shows cows side-on, so a cow that stands across two rows is turned by 90 degrees.
   readonly rotation: 0 | 90;
 }
 
@@ -244,7 +234,7 @@ export interface Footprint {
   readonly bottom: number;
 }
 
-/** The smallest rectangle of squares that contains all of `cells`. */
+// The smallest rectangle of squares that contains all of `cells`.
 export function footprintOf(cells: readonly Cell[]): Footprint {
   const xs = cells.map((cell) => cell.x);
   const ys = cells.map((cell) => cell.y);
@@ -256,7 +246,7 @@ export function footprintOf(cells: readonly Cell[]): Footprint {
   };
 }
 
-/** Where and how to draw a full-grown cow standing on `cells` (pen coordinates). */
+// Where and how to draw a full-grown cow standing on `cells` (pen coordinates).
 export function spriteGeometry(
   kind: CowKindId,
   cells: readonly Cell[],

@@ -32,7 +32,7 @@ interface CowView {
 }
 
 export interface HerdView {
-  /** Brings the view in line with the game. Only what really changed touches the DOM. */
+  // Brings the view in line with the game. Only what really changed touches the DOM.
   update: (state: GameState) => void;
   destroy: () => void;
 }
@@ -111,7 +111,7 @@ export function createHerdView(scene: Scene, level: Level): HerdView {
     scene.cowLayer.append(group);
   };
 
-  /** Puts a grown cow on `cells` (pen coordinates), or anywhere if `at` is given. */
+  // Puts a grown cow on `cells` (pen coordinates), or anywhere if `at` is given.
   const grow = (view: CowView, cow: Cow, cells: readonly Cell[], at: Point | undefined): void => {
     const { left, right, top, bottom } = footprintOf(cells);
     // For a burst the cow is centred on `at`. Otherwise the cells say where it stands.
