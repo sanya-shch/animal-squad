@@ -19,7 +19,8 @@ export const COW_KINDS = {
   normal: { points: 1, skins: 56, shapes: [[[0, 0]]] },
   // Two heads, one square, double the points. Rare, and worth waiting for.
   twoHeaded: { points: 2, skins: 2, shapes: [[[0, 0]]] },
-  // Takes two squares (either way round) for a single point. A trap for the greedy.
+  // Takes two squares side by side for a single point. A trap for the greedy.
+  // Always lies down: the art shows cows side-on, so there is no upright orientation.
   fat: {
     points: 1,
     skins: 2,
@@ -27,10 +28,6 @@ export const COW_KINDS = {
       [
         [0, 0],
         [1, 0],
-      ],
-      [
-        [0, 0],
-        [0, 1],
       ],
     ],
   },

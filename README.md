@@ -5,12 +5,12 @@ then let go. The calves grow up into full-size cows, and some of them are mutant
 (or less) room than you expected. Let in too many and the fence breaks.
 
 <p>
-  <img src="docs/screenshots/menu.png" alt="The menu: daily challenge and four pens" width="48%">
-  <img src="docs/screenshots/play.png" alt="Calves walking into the pen" width="48%">
+  <img src="assets/menu.png" alt="The menu: daily challenge and four pens" width="48%">
+  <img src="assets/play.png" alt="Calves walking into the pen" width="48%">
 </p>
 <p>
-  <img src="docs/screenshots/fence-broke.png" alt="The fence broke" width="48%">
-  <img src="docs/screenshots/phone.png" alt="The game on a phone" width="22%">
+  <img src="assets/fence-broke.png" alt="The fence broke" width="48%">
+  <img src="assets/phone.png" alt="The game on a phone" width="22%">
 </p>
 
 Plain TypeScript and CSS, built with Vite. No framework and no runtime dependencies: the whole
@@ -21,11 +21,11 @@ game is about 14 KB of JavaScript over the wire.
 Hold the mouse button, a finger or Space: cows walk in one by one. Let go to close the gate, and
 the calves in the pen grow up.
 
-| Cow        | Squares | Points | Notes                                           |
-| ---------- | ------- | ------ | ----------------------------------------------- |
-| Cow        | 1       | 1      |                                                 |
-| Two-headed | 1       | 2      | Rare, and worth waiting for                     |
-| Fat        | 2       | 1      | A trap for the greedy: it fits either way round |
+| Cow        | Squares | Points | Notes                                                                |
+| ---------- | ------- | ------ | -------------------------------------------------------------------- |
+| Cow        | 1       | 1      |                                                                      |
+| Two-headed | 1       | 2      | Rare, and worth waiting for                                          |
+| Fat        | 2       | 1      | A trap for the greedy: it always lies down, two squares side by side |
 
 You can see which calves are mutants (a paler calf) but not which kind they are, so every mutant
 is a small gamble. Rocks and odd pen shapes decide whether a fat cow still fits: the game checks
@@ -37,11 +37,11 @@ this exactly, not by counting squares.
 - **Letting go before the first cow** costs nothing: the round is replayed.
 - **Stars:** every pen has three score goals, and a star on one pen opens the next.
 
-| Pen        | Size | Squares | Stars at     |
-| ---------- | ---- | ------- | ------------ |
-| Meadow     | 3x3  | 9       | 30 / 50 / 65 |
-| Paddock    | 4x3  | 12      | 40 / 62 / 80 |
-| Lane       | 2x5  | 10      | 30 / 48 / 64 |
+| Pen        | Size | Squares | Stars at      |
+| ---------- | ---- | ------- | ------------- |
+| Meadow     | 3x3  | 9       | 30 / 50 / 65  |
+| Paddock    | 4x3  | 12      | 40 / 62 / 80  |
+| Lane       | 2x5  | 10      | 30 / 48 / 64  |
 | Rocky Yard | 5x4  | 16      | 45 / 80 / 105 |
 
 - **Daily challenge:** the same pen and the same herds for everybody on a given (UTC) day, so
@@ -58,15 +58,15 @@ npm install
 npm run dev
 ```
 
-| Command                | What it does                                                      |
-| ---------------------- | ----------------------------------------------------------------- |
-| `npm run dev`          | Dev server with hot reload                                        |
-| `npm run check`        | Typecheck, lint, unit tests and formatting: the fast gate         |
-| `npm test`             | Unit tests only (`npm run test:watch` while developing)           |
-| `npm run e2e`          | Browser tests against the production build (see below)            |
-| `npm run build`        | Production build into `dist/`                                     |
-| `npm run preview`      | Serves `dist/` the way GitHub Pages will                          |
-| `npm run format`       | Prettier                                                          |
+| Command           | What it does                                              |
+| ----------------- | --------------------------------------------------------- |
+| `npm run dev`     | Dev server with hot reload                                |
+| `npm run check`   | Typecheck, lint, unit tests and formatting: the fast gate |
+| `npm test`        | Unit tests only (`npm run test:watch` while developing)   |
+| `npm run e2e`     | Browser tests against the production build (see below)    |
+| `npm run build`   | Production build into `dist/`                             |
+| `npm run preview` | Serves `dist/` the way GitHub Pages will                  |
+| `npm run format`  | Prettier                                                  |
 
 Handy URLs: `#meadow`, `#paddock`, `#lane`, `#rocky-yard` open a pen directly (once unlocked),
 `#daily` is today's challenge, and `?seed=123` replays exactly the same game of a pen (any text
@@ -74,11 +74,11 @@ works as a seed too). On the dev server `?unlock=all` opens every pen.
 
 ## Testing
 
-| Layer         | Where                       | What it protects                                                  |
-| ------------- | --------------------------- | ----------------------------------------------------------------- |
-| Unit          | `src/**/*.test.ts`          | Rules, solver, state machine, scoring, storage, sound cues, texts |
-| Balance       | `src/levels/balance.test.ts` | That the star goals stay between what careful and skilled players score |
-| End to end    | `e2e/*.spec.ts`             | The real bundle in a real browser: input, flows, loading, security |
+| Layer      | Where                        | What it protects                                                        |
+| ---------- | ---------------------------- | ----------------------------------------------------------------------- |
+| Unit       | `src/**/*.test.ts`           | Rules, solver, state machine, scoring, storage, sound cues, texts       |
+| Balance    | `src/levels/balance.test.ts` | That the star goals stay between what careful and skilled players score |
+| End to end | `e2e/*.spec.ts`              | The real bundle in a real browser: input, flows, loading, security      |
 
 - The packing solver is cross-checked against a brute-force search on random small pens.
 - Robot players (`src/game/simulate.ts`) play whole runs to calibrate the star goals. The goals are

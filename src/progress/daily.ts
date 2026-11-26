@@ -8,6 +8,11 @@ export function dailyKey(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
+// Milliseconds until the next UTC midnight, when a new daily challenge starts.
+export function msUntilNextDay(date: Date): number {
+  return Date.parse(`${dailyKey(date)}T00:00:00Z`) + DAY_MS - date.getTime();
+}
+
 function parseDay(key: string): number {
   const time = DATE_KEY.test(key) ? Date.parse(`${key}T00:00:00Z`) : Number.NaN;
   if (Number.isNaN(time) || dailyKey(new Date(time)) !== key) {

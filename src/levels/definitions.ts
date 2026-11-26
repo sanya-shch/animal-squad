@@ -18,7 +18,7 @@ export const LEVEL_DEFINITIONS = [
     goals: [40, 62, 80],
   },
   {
-    // A narrow strip: fat cows have to be stacked or paired up just right.
+    // A narrow strip: a fat cow takes a whole row, so every one of them costs two squares.
     id: "lane",
     name: "Lane",
     layout: ["..", "..", "..", "..", ".."],

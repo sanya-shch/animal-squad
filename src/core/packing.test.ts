@@ -30,34 +30,35 @@ describe("findPacking", () => {
     expect(findPacking(p, herdOf("normal", "normal", "normal", "normal", "normal"))).toBeNull();
   });
 
-  it("turns a fat cow to fit a one-wide pen", () => {
-    const p = pen(".", ".");
+  it("never stands a fat cow on its end, so a one-wide pen cannot hold one", () => {
+    expect(findPacking(pen(".", "."), herdOf("fat"))).toBeNull();
+    const twoWide = pen("..");
     const cows = herdOf("fat");
-    const placements = findPacking(p, cows);
+    const placements = findPacking(twoWide, cows);
     expect(placements).not.toBeNull();
-    assertValidPacking(p, cows, placements ?? []);
+    assertValidPacking(twoWide, cows, placements ?? []);
+    expect(placements?.[0]?.cells.map((cell) => cell.y)).toEqual([0, 0]);
   });
 
-  it("tiles a 3x3 pen with four fat cows but not five", () => {
+  it("lays fat cows side by side: a 3x3 pen holds three of them, not four", () => {
     const p = pen("...", "...", "...");
-    const four = herdOf("fat", "fat", "fat", "fat");
-    const placements = findPacking(p, four);
+    const three = herdOf("fat", "fat", "fat");
+    const placements = findPacking(p, three);
     expect(placements).not.toBeNull();
-    assertValidPacking(p, four, placements ?? []);
-    const fifth = { id: 4, kind: "fat" as const, skin: 0 };
-    expect(findPacking(p, [...four, fifth])).toBeNull();
+    assertValidPacking(p, three, placements ?? []);
+    const fourth = { id: 3, kind: "fat" as const, skin: 0 };
+    expect(findPacking(p, [...three, fourth])).toBeNull();
   });
 
-  it("knows geometry, not just counting: a parity-broken pen is full with squares to spare", () => {
-    // 8 free squares, but 5 of one chessboard colour and 3 of the other:
-    // four dominoes can never cover it even though 4 x 2 = 8.
+  it("knows geometry, not just counting: a pen can be full with squares to spare", () => {
+    // 8 free squares, but the rock splits the top row into two single squares:
+    // four lying dominoes can never cover it even though 4 x 2 = 8.
     const p = pen(".#.", "...", "...");
     const four = herdOf("fat", "fat", "fat", "fat");
     expect(squaresNeeded(four)).toBe(p.capacity);
     expect(findPacking(p, four)).toBeNull();
-    // The same pen with the rock in the middle is a ring of 8 and tiles fine.
-    const ring = pen("...", ".#.", "...");
-    expect(findPacking(ring, four)).not.toBeNull();
+    // A pen of the same size with full rows tiles fine.
+    expect(findPacking(pen("..", "..", "..", ".."), four)).not.toBeNull();
   });
 
   it("mixes single and two-square cows", () => {

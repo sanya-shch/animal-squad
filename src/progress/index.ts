@@ -1,4 +1,4 @@
-export { dailyKey, dailyLevel, dailySeed, dailyStreak, previousDay } from "./daily";
+export { dailyKey, dailyLevel, dailySeed, dailyStreak, msUntilNextDay, previousDay } from "./daily";
 export {
   bestScore,
   dailyBoard,

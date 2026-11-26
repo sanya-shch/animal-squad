@@ -10,6 +10,7 @@ import {
   dailySeed,
   dailyStreak,
   levelBoard,
+  msUntilNextDay,
   savedScore,
   unlockedLevelIds,
   type ProgressStore,
@@ -55,7 +56,8 @@ export function startApp(
   let unmount: (() => void) | undefined;
 
   const showMenu = (): void => {
-    const today = dailyKey(now());
+    const current = now();
+    const today = dailyKey(current);
     const save = progress.getSave();
     const unlocked = allUnlocked()
       ? new Set(levels.map((level) => level.id))
@@ -64,10 +66,12 @@ export function startApp(
       levels,
       save,
       unlocked,
+      now,
       daily: {
         level: dailyLevel(levels, today),
         bestToday: savedScore(save, dailyBoard(today)),
         streak: dailyStreak(save, today),
+        endsAt: current.getTime() + msUntilNextDay(current),
       },
       onReset: () => {
         progress.reset();

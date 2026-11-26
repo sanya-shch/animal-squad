@@ -19,7 +19,7 @@ test.describe("the daily challenge", () => {
     await page.clock.setFixedTime(DAILY_TIME);
     await openApp(page, "/");
 
-    await page.locator("a.daily").click();
+    await page.locator("a.daily__play").click();
     await expect(page).toHaveURL(/#daily$/);
     await expect(page.locator(".hud__round")).toContainText("Daily · Round 1 of 8");
     await expect(page.locator(".hud__level")).toHaveText("Meadow");
@@ -58,8 +58,8 @@ test.describe("the daily challenge", () => {
     await playSafeRound(page);
 
     await page.locator(".hud__back").click();
-    await expect(page.locator(".daily__facts")).toContainText("Best today:");
-    await expect(page.locator(".daily__facts")).toContainText("1-day streak");
+    await expect(page.locator(".daily__status")).toContainText("Best");
+    await expect(page.locator(".daily__streak")).toHaveText("Daily streak: 1");
   });
 
   test("tomorrow brings a new challenge and keeps a streak that is still alive", async ({
@@ -69,7 +69,7 @@ test.describe("the daily challenge", () => {
     await seedSave(page, { v: 1, levels: [], daily: [[DAILY_DATE, 9]] });
     await openApp(page, "/");
 
-    await expect(page.locator(".daily__facts")).toContainText("Not played yet");
-    await expect(page.locator(".daily__facts")).toContainText("1-day streak");
+    await expect(page.locator(".daily__status")).toHaveText("Not played");
+    await expect(page.locator(".daily__streak")).toHaveText("Daily streak: 1");
   });
 });

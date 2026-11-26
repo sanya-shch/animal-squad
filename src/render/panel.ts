@@ -39,8 +39,7 @@ function summarizeFinal(state: ResultState, extras: FinalExtras | undefined): Su
     lines.push(extras.isNewBest ? "New best!" : `Best: ${extras.best}`);
     if (extras.nextGoal !== undefined) {
       lines.push(`Next star at ${plural(extras.nextGoal, "point")}`);
-    }
-    else if (extras.stars === 3) lines.push("All three stars earned");
+    } else if (extras.stars === 3) lines.push("All three stars earned");
     for (const name of extras.unlocked) lines.push(`${name} unlocked`);
   }
   return {

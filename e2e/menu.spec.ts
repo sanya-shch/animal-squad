@@ -9,8 +9,9 @@ test.describe("the menu", () => {
     await expect(page.locator(".level")).toHaveCount(4);
     await expect(page.locator(".level.is-locked")).toHaveCount(3);
     await expect(page.locator("a.level")).toHaveAttribute("href", "#meadow");
-    await expect(page.locator(".level__lock").first()).toHaveText("🔒 Earn a star on Meadow");
+    await expect(page.locator(".level__lock").first()).toHaveText("Earn a star on Meadow");
     await expect(page.locator(".daily__tag")).toHaveText("Daily challenge");
+    await expect(page.locator(".pens .pill")).toHaveText("1 of 4 open");
     expect(problems).toEqual([]);
   });
 
@@ -44,7 +45,8 @@ test.describe("the menu", () => {
     await expect(earned.nth(0).locator(".is-earned")).toHaveCount(1);
     await expect(earned.nth(1).locator(".is-earned")).toHaveCount(2);
     await expect(earned.nth(2).locator(".is-earned")).toHaveCount(0);
-    await expect(page.locator(".daily__facts")).toContainText("2-day streak");
+    await expect(page.locator(".daily__streak")).toHaveText("Daily streak: 2");
+    await expect(page.locator(".pens .pill")).toHaveText("3 of 4 open");
   });
 
   test("erasing progress goes back to the beginning", async ({ page }) => {

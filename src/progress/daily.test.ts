@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { compileLevels } from "../core";
 import { LEVEL_DEFINITIONS } from "../levels/definitions";
-import { dailyKey, dailyLevel, dailySeed, dailyStreak, previousDay } from "./daily";
+import { dailyKey, dailyLevel, dailySeed, dailyStreak, msUntilNextDay, previousDay } from "./daily";
 import { dailyBoard, recordScore } from "./progress";
 import { emptySave, type SaveData } from "./save";
 
@@ -72,5 +72,16 @@ describe("dailyStreak", () => {
   it("stops at the first gap", () => {
     const save = played("2026-11-20", "2026-11-22", "2026-11-23", "2026-11-25");
     expect(dailyStreak(save, today)).toBe(1);
+  });
+});
+
+describe("msUntilNextDay", () => {
+  it("counts down to the next UTC midnight", () => {
+    expect(msUntilNextDay(new Date("2026-11-25T12:00:00Z"))).toBe(12 * 60 * 60 * 1000);
+    expect(msUntilNextDay(new Date("2026-11-25T23:59:59Z"))).toBe(1000);
+  });
+
+  it("is a whole day at midnight itself", () => {
+    expect(msUntilNextDay(new Date("2026-11-26T00:00:00Z"))).toBe(24 * 60 * 60 * 1000);
   });
 });
