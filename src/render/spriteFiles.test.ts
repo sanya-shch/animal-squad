@@ -7,13 +7,13 @@ import {
   cowSpriteFile,
   DECOR_FILES,
   fenceFile,
+  herdSpriteFiles,
   MUTANT_CALF_FILE,
 } from "./spriteFiles";
 
 // Vite lists the sprites that really exist, so a typo in a path fails here, not in the browser.
-const existing = new Set(
-  Object.keys(import.meta.glob("../assets/**/*.png")).map((path) => path.replace("../assets/", "")),
-);
+const files = Object.keys(import.meta.glob("../assets/**/*.{png,webp}"));
+const existing = new Set(files.map((path) => path.replace("../assets/", "")));
 
 describe("sprite files", () => {
   it("has a sprite for every skin of every kind of cow", () => {
@@ -53,5 +53,23 @@ describe("sprite files", () => {
     expect(calfFile("normal")).toBe(CALF_FILE);
     expect(calfFile("fat")).toBe(MUTANT_CALF_FILE);
     expect(calfFile("twoHeaded")).toBe(MUTANT_CALF_FILE);
+  });
+
+  it("lists the files a herd needs once each, and every one exists", () => {
+    const herd = [
+      { id: 0, kind: "normal", skin: 3 },
+      { id: 1, kind: "normal", skin: 3 },
+      { id: 2, kind: "fat", skin: 1 },
+      { id: 3, kind: "twoHeaded", skin: 0 },
+    ] as const;
+    const files = herdSpriteFiles(herd);
+    expect(files).toEqual([
+      "cow/cow_4.webp",
+      CALF_FILE,
+      "cow/cow_02.webp",
+      MUTANT_CALF_FILE,
+      "cow/cow_03.webp",
+    ]);
+    for (const file of files) expect(existing.has(file)).toBe(true);
   });
 });

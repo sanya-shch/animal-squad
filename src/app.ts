@@ -1,7 +1,9 @@
+import { createAudioEngine, type AudioEngine, type SoundControl } from "./audio";
 import { hashSeed, randomSeed, type Level } from "./core";
 import {
   createBrowserStorage,
   createProgressStore,
+  createSettingsStore,
   dailyBoard,
   dailyKey,
   dailyLevel,
@@ -25,6 +27,7 @@ function readSeed(params: URLSearchParams): number {
 
 export interface AppOptions {
   readonly progress?: ProgressStore;
+  readonly audio?: AudioEngine;
   /** The current time. Injectable so that tests can pretend it is another day. */
   readonly now?: () => Date;
 }
@@ -38,7 +41,18 @@ export function startApp(
   levels: readonly Level[],
   options: AppOptions = {},
 ): () => void {
-  const progress = options.progress ?? createProgressStore(createBrowserStorage());
+  const storage = createBrowserStorage();
+  const progress = options.progress ?? createProgressStore(storage);
+  const settings = createSettingsStore(storage);
+  const audio = options.audio ?? createAudioEngine({ muted: settings.isMuted() });
+  const sound: SoundControl = {
+    play: audio.play,
+    isMuted: audio.isMuted,
+    setMuted: (muted) => {
+      audio.setMuted(muted);
+      settings.setMuted(muted);
+    },
+  };
   const now = options.now ?? (() => new Date());
   let unmount: (() => void) | undefined;
 
@@ -92,7 +106,7 @@ export function startApp(
     root.replaceChildren();
     const session = sessionFor(decodeURIComponent(location.hash.slice(1)));
     if (session) {
-      unmount = mountGame(root, { session, progress, levels });
+      unmount = mountGame(root, { session, progress, levels, sound });
     } else {
       if (location.hash !== "" && location.hash !== "#") {
         // A locked or unknown pen: tidy the address bar instead of leaving a dead link in it.
@@ -102,12 +116,21 @@ export function startApp(
     }
   };
 
+  // Browsers keep audio locked until the player does something: the first touch unlocks it.
+  const unlockAudio = (): void => {
+    audio.unlock();
+  };
+  window.addEventListener("pointerdown", unlockAudio, { capture: true });
+  window.addEventListener("keydown", unlockAudio, { capture: true });
   window.addEventListener("hashchange", show);
   show();
 
   return () => {
     window.removeEventListener("hashchange", show);
+    window.removeEventListener("pointerdown", unlockAudio, { capture: true });
+    window.removeEventListener("keydown", unlockAudio, { capture: true });
     unmount?.();
+    audio.dispose();
   };
 }
 

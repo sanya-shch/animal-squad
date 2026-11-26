@@ -1,14 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { dailyBoard, levelBoard } from "./progress";
-import {
-  createMemoryStorage,
-  createProgressStore,
-  STORAGE_KEY,
-  type KeyValueStore,
-} from "./store";
+import { createMemoryStorage, createProgressStore, STORAGE_KEY, type KeyValueStore } from "./store";
 
-/** Counts writes, so tests can prove that nothing is written when nothing changed. */
+// Counts writes, so tests can prove that nothing is written when nothing changed.
 function countingStorage() {
   const inner = createMemoryStorage();
   const stats = { writes: 0 };

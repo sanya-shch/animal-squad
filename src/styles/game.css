@@ -8,7 +8,7 @@
 
 .hud {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 4px 12px;
   height: var(--hud-height);
@@ -265,4 +265,20 @@
     animation-duration: 1ms !important;
     animation-delay: 0s !important;
   }
+}
+
+.hud__sound {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.25);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.hud__sound[aria-pressed="false"] {
+  opacity: 0.6;
 }

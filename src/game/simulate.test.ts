@@ -66,9 +66,7 @@ describe("robot players", () => {
 
   it("withLag lets in extra cows after the stop decision, and starts fresh every round", () => {
     const policy = withLag(fixedCount(2), 1);
-    const decisions = [0, 1, 2, 3].map((admitted) =>
-      policy({ level, admitted, silhouettes: [] }),
-    );
+    const decisions = [0, 1, 2, 3].map((admitted) => policy({ level, admitted, silhouettes: [] }));
     expect(decisions).toEqual([true, true, true, false]);
     // A new round: the count falls back to 0 and the old decision is forgotten.
     expect(policy({ level, admitted: 0, silhouettes: [] })).toBe(true);

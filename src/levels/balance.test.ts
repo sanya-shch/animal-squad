@@ -26,7 +26,12 @@ describe("star goals", () => {
   for (const level of compileLevels(LEVEL_DEFINITIONS)) {
     describe(level.name, () => {
       it("do not reward a player who only lets in one cow", () => {
-        expect(share(starsEarned(level, () => fixedCount(1)), 1)).toBe(0);
+        expect(
+          share(
+            starsEarned(level, () => fixedCount(1)),
+            1,
+          ),
+        ).toBe(0);
       });
 
       it("give one star to a careful player, but not two", () => {

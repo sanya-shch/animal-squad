@@ -96,10 +96,12 @@ export function createHerdView(scene: Scene, level: Level): HerdView {
         cz: depth(crowd.y + 0.3),
         i: index,
       });
+      // The full-grown sprite starts loading and decoding now, so it can appear without a hitch.
+      const grown = sprite(assetUrl(cowSpriteFile(cow.kind, cow.skin)), "cow__sprite");
+      void grown.decode().catch(() => undefined);
       element.append(
         create("span", "cow__shadow"),
-        // The full-grown sprite starts loading now, so it is ready by the time it is needed.
-        sprite(assetUrl(cowSpriteFile(cow.kind, cow.skin)), "cow__sprite"),
+        grown,
         sprite(assetUrl(calfFile(cow.kind)), "cow__calf"),
       );
       group?.append(element);

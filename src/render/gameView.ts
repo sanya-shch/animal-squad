@@ -1,24 +1,28 @@
-import { createGame, STARTING_LIVES, type GameState } from "../game";
+import { cuesFor, type SoundControl } from "../audio";
+import { createGame, herdForRound, STARTING_LIVES, type GameState } from "../game";
 import { bindHoldGesture } from "../input/holdGesture";
 import type { Level } from "../core";
-import {
-  bestScore,
-  summarizeRun,
-  unlockedLevelIds,
-  type ProgressStore,
-} from "../progress";
+import { bestScore, summarizeRun, unlockedLevelIds, type ProgressStore } from "../progress";
 import type { PlaySession } from "../session";
+import { assetUrl } from "./assets";
 import { create, setAttr } from "./dom";
 import { createHerdView } from "./herdView";
 import { createHud } from "./hud";
 import { createPanel, type FinalExtras } from "./panel";
+import { createPreloader } from "./preload";
 import { createScene } from "./scene";
+import { herdSpriteFiles } from "./spriteFiles";
+import { revealDurationMs } from "./timing";
+
+/** Shared by every game: a sprite fetched for one pen is already there for the next. */
+const preloadImages = createPreloader();
 
 export interface GameViewOptions {
   readonly session: PlaySession;
   readonly progress: ProgressStore;
   /** All pens, in order. Needed to tell the player which pens a run has opened. */
   readonly levels: readonly Level[];
+  readonly sound: SoundControl;
 }
 
 /**
@@ -26,7 +30,7 @@ export interface GameViewOptions {
  * The game is the single source of truth; every part of the view just reacts to its state.
  */
 export function mountGame(root: HTMLElement, options: GameViewOptions): () => void {
-  const { session, progress, levels } = options;
+  const { session, progress, levels, sound } = options;
   const { level, board } = session;
 
   const game = createGame({
@@ -38,7 +42,11 @@ export function mountGame(root: HTMLElement, options: GameViewOptions): () => vo
   const hud = createHud({
     title: level.name,
     prefix: session.label === "" ? "" : `${session.label} · `,
+    onToggleSound: () => {
+      toggleSound();
+    },
   });
+  hud.setMuted(sound.isMuted());
   const scene = createScene(level);
   const herd = createHerdView(scene, level);
   const panel = createPanel(game.next);
@@ -54,6 +62,13 @@ export function mountGame(root: HTMLElement, options: GameViewOptions): () => vo
   let bestBefore = 0;
   let unlockedBefore: ReadonlySet<string> = new Set();
   let recordedFor: GameState | undefined;
+  let previous: GameState | undefined;
+  let preloadedFor: GameState | undefined;
+
+  function toggleSound(): void {
+    sound.setMuted(!sound.isMuted());
+    hud.setMuted(sound.isMuted());
+  }
 
   const startOfRun = (state: GameState): boolean =>
     state.phase === "ready" &&
@@ -86,6 +101,19 @@ export function mountGame(root: HTMLElement, options: GameViewOptions): () => vo
     }
     const best = Math.max(bestScore(progress.getSave(), board), state.run.score);
 
+    // While the result is on screen the next herd is already known: fetch its sprites now, so
+    // that nothing pops in when the next round starts.
+    if (state.phase === "result" && !state.final && preloadedFor !== state) {
+      preloadedFor = state;
+      if (state.result.status !== "empty") {
+        const files = herdSpriteFiles(herdForRound(level, state.run));
+        preloadImages(files.map(assetUrl));
+      }
+    }
+
+    sound.play(cuesFor(previous, state, state.phase === "result" ? revealDurationMs(state) : 0));
+    previous = state;
+
     herd.update(state);
     hud.update(state, best);
     panel.update(state, finalExtras(state));
@@ -96,14 +124,14 @@ export function mountGame(root: HTMLElement, options: GameViewOptions): () => vo
   const unsubscribe = game.subscribe(render);
   const unbind = bindHoldGesture({ target: stage, onHold: game.hold, onRelease: game.release });
 
-  // Keyboard players hold with Space and move on with Enter.
+  // Keyboard players hold with Space, move on with Enter and switch the sound with M.
   const controller = new AbortController();
   window.addEventListener(
     "keydown",
     (event) => {
-      if (event.key === "Enter" && !event.repeat && game.getState().phase === "result") {
-        game.next();
-      }
+      if (event.repeat) return;
+      if (event.key === "Enter" && game.getState().phase === "result") game.next();
+      if (event.key === "m" || event.key === "M") toggleSound();
     },
     { signal: controller.signal },
   );

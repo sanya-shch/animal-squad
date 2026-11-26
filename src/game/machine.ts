@@ -44,6 +44,11 @@ export type GameEvent =
   /** Abandon everything and start a new run. */
   | { readonly type: "restart"; readonly seed: number };
 
+/** The herd of the round `run` is about to play. The same run always gives the same herd. */
+export function herdForRound(level: Level, run: Run): Cow[] {
+  return generateHerd(level, createRng(roundSeed(run)));
+}
+
 export interface GameMachine {
   initialState: (seed: number) => GameState;
   /**
@@ -57,7 +62,7 @@ export function createGameMachine(level: Level): GameMachine {
   const readyState = (run: Run): GameState => ({
     phase: "ready",
     run,
-    herd: generateHerd(level, createRng(roundSeed(run))),
+    herd: herdForRound(level, run),
   });
 
   const finish = (state: AdmittingState, admitted: number): GameState => {

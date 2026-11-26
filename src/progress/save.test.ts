@@ -9,7 +9,13 @@ const save = (levels: [string, number][] = [], daily: [string, number][] = []): 
 
 describe("serializeSave / parseSave", () => {
   it("round-trips a save", () => {
-    const original = save([["meadow", 42], ["lane", 7]], [["2026-11-25", 19]]);
+    const original = save(
+      [
+        ["meadow", 42],
+        ["lane", 7],
+      ],
+      [["2026-11-25", 19]],
+    );
     expect(parseSave(serializeSave(original))).toEqual(original);
   });
 
@@ -47,11 +53,26 @@ describe("serializeSave / parseSave", () => {
         ["yesterday", 3],
       ],
     });
-    expect(parseSave(raw)).toEqual(save([["meadow", 30], ["lane", 12]], [["2026-11-25", 8]]));
+    expect(parseSave(raw)).toEqual(
+      save(
+        [
+          ["meadow", 30],
+          ["lane", 12],
+        ],
+        [["2026-11-25", 8]],
+      ),
+    );
   });
 
   it("keeps the higher score when a key appears twice", () => {
-    const raw = JSON.stringify({ v: 1, levels: [["meadow", 5], ["meadow", 9], ["meadow", 7]] });
+    const raw = JSON.stringify({
+      v: 1,
+      levels: [
+        ["meadow", 5],
+        ["meadow", 9],
+        ["meadow", 7],
+      ],
+    });
     expect(parseSave(raw).levels.get("meadow")).toBe(9);
   });
 
@@ -72,11 +93,30 @@ describe("serializeSave / parseSave", () => {
 describe("mergeSaves", () => {
   it("keeps the best score of each entry from both sides", () => {
     const merged = mergeSaves(
-      save([["meadow", 10], ["lane", 5]], [["2026-11-24", 3]]),
-      save([["meadow", 8], ["paddock", 9]], [["2026-11-24", 6]]),
+      save(
+        [
+          ["meadow", 10],
+          ["lane", 5],
+        ],
+        [["2026-11-24", 3]],
+      ),
+      save(
+        [
+          ["meadow", 8],
+          ["paddock", 9],
+        ],
+        [["2026-11-24", 6]],
+      ),
     );
     expect(merged).toEqual(
-      save([["meadow", 10], ["lane", 5], ["paddock", 9]], [["2026-11-24", 6]]),
+      save(
+        [
+          ["meadow", 10],
+          ["lane", 5],
+          ["paddock", 9],
+        ],
+        [["2026-11-24", 6]],
+      ),
     );
   });
 });

@@ -8,6 +8,8 @@ export interface Hud {
   readonly element: HTMLElement;
   /** `best` is the best score on this board, counting the run in progress. */
   update: (state: GameState, best: number) => void;
+  /** Shows whether the sound is off. */
+  setMuted: (muted: boolean) => void;
   destroy: () => void;
 }
 
@@ -15,13 +17,19 @@ export interface HudOptions {
   readonly title: string;
   /** Goes in front of the round counter, e.g. "Daily · ". */
   readonly prefix: string;
+  readonly onToggleSound: () => void;
 }
 
 /** Level name, round, score, lives and the progress of the herd through the gate. */
-export function createHud({ title, prefix }: HudOptions): Hud {
+export function createHud({ title, prefix, onToggleSound }: HudOptions): Hud {
   const back = create("a", "hud__back", ["←"]);
   back.href = "#";
   back.setAttribute("aria-label", "Back to the menu");
+
+  const sound = create("button", "hud__sound");
+  sound.type = "button";
+  sound.setAttribute("aria-label", "Sound");
+  sound.addEventListener("click", onToggleSound);
 
   const level = create("span", "hud__level", [title]);
   const round = create("span", "hud__round");
@@ -41,6 +49,7 @@ export function createHud({ title, prefix }: HudOptions): Hud {
   const element = create("header", "hud", [
     back,
     create("div", "hud__title", [level, round]),
+    sound,
     create("div", "hud__stats", [score, streak, lives]),
     progress,
   ]);
@@ -97,6 +106,10 @@ export function createHud({ title, prefix }: HudOptions): Hud {
         }
       }
       showStats(state, best);
+    },
+    setMuted: (muted) => {
+      setText(sound, muted ? "🔇" : "🔊");
+      setAttr(sound, "aria-pressed", String(!muted));
     },
     destroy: () => {
       clearTimeout(pending);
