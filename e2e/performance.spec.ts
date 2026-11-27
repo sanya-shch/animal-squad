@@ -53,14 +53,21 @@ test.describe("loading and rendering", () => {
     if (!stage) throw new Error("The stage is not on screen");
     await page.mouse.move(stage.x + stage.width / 2, stage.y + stage.height / 2);
     await page.mouse.down();
-    await expect(page.locator('.cow[data-phase="inside"]')).toHaveCount(4, { timeout: 5000 });
-    const mutations = await page.evaluate(
-      () => (window as unknown as { __counter: { mutations: number } }).__counter.mutations,
-    );
+    // Cows walk in faster than the assertion polls, so "exactly four" can be skipped over for
+    // good on a slow machine. Wait for at least four, then count cows and changes in one go.
+    const inside = page.locator('.cow[data-phase="inside"]');
+    await expect
+      .poll(() => inside.count(), { intervals: [50], timeout: 5000 })
+      .toBeGreaterThanOrEqual(4);
+    const { cows, mutations } = await page.evaluate(() => ({
+      cows: document.querySelectorAll('.cow[data-phase="inside"]').length,
+      mutations: (window as unknown as { __counter: { mutations: number } }).__counter.mutations,
+    }));
     await page.mouse.up();
 
-    // Four cows came in. Each one changes its own phase, the progress bar and a status line.
-    expect(mutations / 4).toBeLessThan(6);
+    // Each cow that came in changes its own phase, the progress bar and a status line.
+    expect(cows).toBeGreaterThanOrEqual(4);
+    expect(mutations / cows).toBeLessThan(6);
   });
 
   test("the page stays small over a long session", async ({ page }) => {

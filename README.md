@@ -72,24 +72,6 @@ Handy URLs: `#meadow`, `#paddock`, `#lane`, `#rocky-yard` open a pen directly (o
 `#daily` is today's challenge, and `?seed=123` replays exactly the same game of a pen (any text
 works as a seed too). On the dev server `?unlock=all` opens every pen.
 
-## Testing
-
-| Layer      | Where                        | What it protects                                                        |
-| ---------- | ---------------------------- | ----------------------------------------------------------------------- |
-| Unit       | `src/**/*.test.ts`           | Rules, solver, state machine, scoring, storage, sound cues, texts       |
-| Balance    | `src/levels/balance.test.ts` | That the star goals stay between what careful and skilled players score |
-| End to end | `e2e/*.spec.ts`              | The real bundle in a real browser: input, flows, loading, security      |
-
-- The packing solver is cross-checked against a brute-force search on random small pens.
-- Robot players (`src/game/simulate.ts`) play whole runs to calibrate the star goals. The goals are
-  a starting point: tune them after watching real people play, and the balance tests will say
-  what moved.
-- The e2e tests run against `vite preview`, so they cover the bundle, the sprite files and the
-  Content-Security-Policy too. One-time setup: `npx playwright install chromium`. They cover the
-  menu and unlocks, a full run, the daily challenge, touch and keyboard play, sound, reduced
-  motion, a clean console, blocked storage, the CSP, and the loading and rendering budget.
-- CI (`.github/workflows/ci.yml`) runs the fast gate and the e2e tests on every push and pull request.
-
 ## Architecture
 
 ```
@@ -128,30 +110,3 @@ A few decisions worth knowing about:
   `localStorage` never stops the game.
 - **Sound is a pure function of state** (`cuesFor`), timed to the animations and synthesized with
   the Web Audio API, so there are no audio files and the soundtrack is unit-tested.
-
-## Performance and security
-
-Measured during development, so re-measure after changes:
-
-- JavaScript is about 14 KB and CSS about 3 KB (gzip).
-- The cow sprites are lossy WebP (quality 80, full-quality alpha): 472 KB instead of 2.1 MB of
-  PNG, with no visible difference at the size they are drawn. The two flat calf icons are
-  lossless and small enough to be inlined. The pixel-art fence and scenery stay PNG.
-  To convert a new sprite: `cwebp -q 80 -alpha_q 100 -m 6 sprite.png -o sprite.webp`.
-- Sprites are decoded as soon as a round starts, and the next round's sprites are fetched while
-  the result is on screen, so nothing pops in.
-- The production build carries a strict Content-Security-Policy (no inline code, no third-party
-  origins). If you ever add an external script or font, widen it in `vite.config.ts`.
-
-## Content and licenses
-
-- The title font (Granita) is a demo version: it paints a watermark over digits and punctuation,
-  so `unicode-range` limits it to letters and the system font draws everything else. Replace it
-  with a properly licensed font before publishing commercially.
-- Check the license of the cow illustrations and the fence and scenery packs in `src/assets`, and
-  credit their authors. The code has no license file yet: choose one (see the checklist).
-
-## Ideas for later
-
-More kinds of mutant (the cow kinds are plain data in `core/cows.ts`), a service worker for
-offline play, a shared leaderboard for the daily challenge, and more pens.
